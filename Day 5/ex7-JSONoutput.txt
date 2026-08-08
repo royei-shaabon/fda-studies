@@ -1,0 +1,29 @@
+Structured JSON output on a dataset
+
+Last time, classifyTicket returned a bare string. Real usage needs more: multiple fields, typed, validated — and run across a list of items, not just one.
+
+The exercise: write classifyTickets that takes an array of tickets and returns a typed array of results.
+
+typescript
+interface Ticket {
+  id: string;
+  text: string;
+}
+
+interface TicketClassification {
+  id: string;
+  category: "billing" | "technical" | "account" | "other";
+  confidence: "high" | "low";
+}
+
+async function classifyTickets(tickets: Ticket[]): Promise<TicketClassification[]> {
+  // ...
+}
+
+A few real design decisions you need to make, not just mechanics:
+
+One API call per ticket, or one call for the whole batch? Both are valid; think about what changes (cost, latency, error isolation, prompt complexity) between the two — you'll need to defend whichever you pick.
+Getting the model to actually return JSON. The system prompt needs to instruct the model to respond with only valid JSON matching your shape — no prose, no markdown code fences. This is a real, common failure point: models sometimes wrap JSON in ```json ... ``` even when told not to.
+Don't trust the JSON blindly. JSON.parse() can throw on malformed output, and even if it parses, nothing guarantees the shape matches TicketClassification (right field names, category being one of your four literal values, not some other word the model invented). You need real validation here — this is the same unknown → validated pattern from Day 2, now applied to LLM output instead of API data.
+
+Pick your approach for #1, and write the full implementation. I want to see the system prompt, the parsing, and the validation — including what happens to a ticket whose classification fails validation (dropped? flagged? included with an error marker?). Your call, but state it.
