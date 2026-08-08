@@ -1,0 +1,13 @@
+5: deterministic logic belongs in tools — this is a discussion, tying directly back to your Day 3 capstone.
+
+Your Day 3 exercise built weighted multi-criteria scoring with configurable weights and data-driven explanations — real math, done in plain TypeScript, with numbers you could verify by hand.
+
+Question: if you rebuilt that scoring system as an LLM-powered feature — say, the model has access to a score_candidate tool — what specifically would you put inside the tool (as real TypeScript math) versus what would you let the model itself decide or generate around it? Be concrete: name the actual pieces of your Day 3 scoring logic (the weighting, the aggregation, the explanation text) and say which side of the line each one falls on, and why.
+
+
+ANSWER:
+Weighting: I would keep the weights in TypeScript because they are core business logic. A small change can affect the entire ranking, so they need to be explicit, controlled, and deterministic.
+
+Aggregation: All scoring and aggregation should also stay in code because they are deterministic mathematical calculations with one correct result. Using an LLM for them would add unnecessary cost, latency, and risk of mistakes.
+
+Explanation: I would let the LLM generate the final explanation, but only from facts already calculated by the tool. The code should determine things like the winner, score, averages, and comparisons, while the model turns those facts into a clearer and more natural explanation.
