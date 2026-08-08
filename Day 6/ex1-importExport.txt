@@ -1,0 +1,10 @@
+1. Import/export — gap closure (brief)
+
+You already saw the mechanics earlier: named exports, and import { X } from "./file". This is just confirming it, not re-teaching it.
+
+Exercise: Two files.
+
+validation.ts — exports the RawOrder interface (from your Day 2/4 validation work) and a function isRawOrder(data: unknown): data is RawOrder (stub body is fine — a comment like // implementation omitted is enough, I'm checking the export mechanics, not re-deriving the guard).
+process.ts — imports both from ./validation, and uses them in a function signature: function processOrders(data: unknown[]): void that, inside, would use isRawOrder to filter/narrow (stub the body, just show the import line and the signature actually referencing the imported types correctly).
+
+Write both files' content. This should take you two minutes, not a redesign.
