@@ -1,0 +1,17 @@
+2 proper — tool schemas next.
+
+Before the mechanics: a tool schema is how you describe a function to the model — its name, what it does, and what arguments it takes — so the model can decide when to "call" it and generate correctly-shaped arguments. The model never sees your actual TypeScript function; it only sees this description.
+
+Question before I show you the shape: given that the model can only work from a text/JSON description of your function, not the function itself — what do you think happens if that description is vague, e.g. a parameter just described as "the amount" with no type or constraint, versus one described precisely as "amount: a positive number representing the charge in USD cents"? Concretely, what goes wrong with the vague version, and where in the tool-call loop would that failure actually surface?
+
+
+ANSWER:
+A vague tool schema can cause the model to generate incorrect arguments, such as the wrong type, format, or units. The failure usually surfaces when the tool is called and the code tries to validate or execute those arguments.
+
+
+Right, and one thing to push on: you said the failure "surfaces when the code tries to validate or execute" — that's true if your tool code validates its inputs. But think back to Day 2 and today's RawOrder gap-closure — what happens if the tool function doesn't validate, and just trusts the arguments the model handed it, the same way RawOrder[] trusted unchecked API data?
+
+Quick answer before we move on: if a tool blindly trusts model-generated arguments the way your first processOrders draft blindly trusted RawOrder[], where does a bad argument actually cause damage — same layer as before, or somewhere new?
+
+
+ANSWER:
