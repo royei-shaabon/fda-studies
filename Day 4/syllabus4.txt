@@ -1,0 +1,12 @@
+Day 4: using AI coding tools (Claude Code/Cursor) properly.
+
+This is easy to underrate, but it's directly relevant to your role. An FDE spends a lot of time in fast, unfamiliar codebases, often with an AI pair-programmer running. The skill isn't "can you type a prompt" — it's whether you can direct the tool precisely, catch it when it's wrong, and stay the one who actually understands the code. Interviewers can tell the difference between someone who understands what got built and someone who's just relaying AI output.
+
+Day 4 syllabus:
+
+#	Topic	Exercise
+1	What these tools actually do (and don't do) — mental model	Discussion + short exercise
+2	Writing a spec/prompt precise enough to get correct code the first time	1
+3	Reviewing AI-generated code like a reviewer, not a consumer	1 (I'll hand you flawed code)
+4	Iterative correction — telling the tool what's wrong, not just "fix it"	1
+5	When to write it yourself instead of prompting	Discussion

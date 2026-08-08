@@ -1,0 +1,34 @@
+Correct — that's the right explanation, and cleanly stated. Good, you've got it.
+
+Let's move on.
+
+Next: Type aliases (type) vs interface
+
+You've been using interface to describe object shapes. There's a second way to do the same thing: the type keyword.
+
+typescript
+type Order = {
+  orderId: string;
+  total: number;
+  isPaid?: boolean;
+};
+
+This looks almost identical to the interface version, and for describing a plain object shape, they're functionally interchangeable — you could swap one for the other in everything you've written today and it would still work exactly the same.
+
+So why do both exist? A few real differences:
+
+interface can be "reopened" and extended later — you can declare the same interface name twice and TypeScript merges the fields together. type cannot do this; declaring the same type name twice is an error.
+type can describe things interface can't — unions, primitives, tuples. For example:
+typescript
+type ID = string | number; // "ID is either a string or a number"
+type Status = "pending" | "paid" | "cancelled"; // a union of exact string literals
+
+You genuinely cannot write this with interface — interfaces only describe object shapes (and function/class shapes), not unions like this.
+
+The practical convention most TypeScript codebases follow: use interface for object shapes (especially ones that represent "things" — a Product, a User, an Order), use type for unions, primitives, or combinations of types. Some teams just standardize on type for everything since it's more flexible. You'll see both in real codebases — it's not a hard rule, just a convention.
+
+Exercise
+Write a type called PaymentMethod that can only be one of these exact string values: "credit_card", "paypal", "bank_transfer".
+Add a field called paymentMethod to your Order (interface or type, your choice) using that new type.
+Create a valid Order object using one of the allowed payment methods.
+Then tell me: what do you predict happens if you try to assign paymentMethod: "cash" instead?

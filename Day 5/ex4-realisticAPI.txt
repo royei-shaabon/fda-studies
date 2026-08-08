@@ -1,0 +1,21 @@
+#4: typing the request/response, and error handling.
+
+You've been assuming a clean, successful response shape this whole time. Real usage requires handling what happens when the call fails — network error, rate limit, invalid API key, the model refusing, malformed input on your end. This is the same discipline as Day 1's async/await error handling, applied to this specific API.
+
+Here's a more realistic (simplified) response shape, and a few ways it can fail:
+
+typescript
+interface ApiResponse {
+  content: { type: "text"; text: string }[];
+  stop_reason: string;
+}
+
+Exercise: Write an async function sendMessage(history: Message3[]): Promise<string> that:
+
+Calls buildRequest(history) to get the request body
+Calls fetch against "https://api.anthropic.com/v1/messages" with that body (POST, JSON)
+Checks if the response is not OK (!response.ok) — if so, throw an Error with the status code in the message
+Parses the JSON, and returns just the text string from the first content block
+Assume the response shape is ApiResponse above — but don't just as-cast it blindly; at minimum, check that content exists and has at least one element before accessing content[0].text, and throw a clear error if not
+
+Use everything from Day 1 (async/await, try/catch or otherwise) and Day 2 (don't trust external data blindly) here. Go ahead.

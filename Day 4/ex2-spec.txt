@@ -1,0 +1,187 @@
+writing a spec precise enough to get correct code the first time.
+
+Exercise: Below is a real vague prompt someone might type into Claude Code. I want you to rewrite it as a spec precise enough that a capable-but-literal tool can't misinterpret it.
+
+"Write a function that filters out the bad orders and gives me the total."
+
+Rewrite this into a real spec. To do it right, you'll need to (arbitrarily) decide and state: what shape is an "order," what makes an order "bad," what "total" means (sum of what field?), what the return type/shape should be, and how it should handle an empty result. Write it as you actually would in a prompt — not TypeScript code, the spec itself.
+
+
+
+This is basically a spec/PRD, just aimed at code instead of a team.
+
+Both, but at different altitudes:
+
+Result side — this is what you already do well as a PM: define the business meaning. What counts as a "bad" order? What does "total" mean to the business (revenue? item count? order count?)? What should happen on edge cases (empty input, all orders bad)? This is unambiguous, non-negotiable intent — the tool shouldn't be guessing at business logic any more than an engineer should.
+Technical side — this is the part that's new for you: you also have to pin down the shape of the data and the contract of the function, because an AI coding tool (like a human engineer) can't write correct code against an ambiguous interface. That means: what fields does an order have and what are their types, what's the function's input type, what's its exact return type/shape, and what happens on the empty case as a type, not just as behavior (e.g., does it return 0, or null, or throw?).
+The reason both matter: if you only specify the result side ("give me the total of good orders"), the tool will invent the data shape and the return type itself — and it'll invent something plausible, not necessarily something that matches the rest of your codebase or what you actually meant by "bad." If you only specify the technical side (types, shapes) without the business rule, you'll get a function that type-checks perfectly and does the wrong thing — same failure mode as your Day 1–3 work, just now embedded in someone else's code that you have to review instead of write.
+
+So: write the spec as if you're handing it to a literal-minded engineer who will build exactly what's written, no more, no less, and won't ask follow-up questions. Go ahead and rewrite the prompt.
+
+
+
+UNSWER:
+# Goal
+
+Your goal is to identify all invalid orders, display them in detail, and return the total number of invalid orders.
+
+If all orders are valid, print:
+
+`כל ההזמנות תקינות המשך יום נעים`
+
+## Data Structures
+
+Use an `interface` for both the raw order received from the API and the normalized order.
+
+### RawOrder
+
+The API data is expected to have the following structure:
+
+```ts
+interface RawOrder {
+  index: string;
+  customerName: string;
+  productNumber: string;
+  products: string[];
+  delivered: string;
+}
+```
+
+Do not assume that the API response is valid only because the `RawOrder` interface is defined.
+
+The raw runtime data must be validated before normalization.
+
+The API may still return missing fields, `undefined`, `null`, or invalid values, and these cases must be handled as invalid orders.
+
+### Order
+
+After normalization, an order should have the following structure:
+
+```ts
+interface Order {
+  index: number;
+  customerName: string;
+  productNumber: number;
+  products: string[];
+  delivered: boolean;
+}
+```
+
+## Normalization
+
+Create a function named `normalizeOrder` that converts a valid `RawOrder` into an `Order`.
+
+Use the following conversions:
+
+* `index`: convert from `string` to `number`.
+* `productNumber`: convert from `string` to `number`.
+* `customerName`: remains a `string`.
+* `products`: remains a `string[]`.
+* `delivered`: convert according to the following rules:
+
+```text
+"true"  → true
+"1"     → true
+"false" → false
+"0"     → false
+""      → false
+```
+
+Any other value for `delivered` is invalid.
+
+## Validation Rules
+
+An order is valid only if all of the following conditions are satisfied:
+
+* All required fields must exist.
+* No required field may be `undefined` or `null`.
+* `index` must successfully convert to a number.
+* `index` must be a positive integer.
+* `index` must be unique.
+* If the same `index` appears more than once, only the second occurrence and any later occurrences are considered invalid.
+* `customerName` must be a non-empty string.
+* `products` must be a non-empty array.
+* Every item inside `products` must be a non-empty string.
+* `productNumber` must successfully convert to a number.
+* `productNumber` must be a positive integer.
+* `productNumber` must exactly match `products.length`.
+* `delivered` may contain only:
+
+  * `"true"`
+  * `"false"`
+  * `"1"`
+  * `"0"`
+  * `""`
+* Any other value for `delivered` is invalid.
+
+## Invalid Order Definition
+
+An order is considered invalid if it fails one or more of the validation rules above.
+
+If an order has multiple validation problems, return **all reasons for failure**, not only the first one.
+
+Do not stop validation after finding the first error.
+
+If normalization cannot be completed, return the original raw API data together with all detected failure reasons.
+
+Even if normalization succeeds but the order later fails validation, always return the original raw data received from the API rather than the normalized values.
+
+For example, if the API returns:
+
+```ts
+{
+  index: "5",
+  customerName: "Roei",
+  productNumber: "3",
+  products: ["banana", "milk"],
+  delivered: "true"
+}
+```
+
+and the order is invalid because `productNumber` does not match `products.length`, the output should still contain:
+
+```ts
+index: "5"
+productNumber: "3"
+delivered: "true"
+```
+
+and not:
+
+```ts
+index: 5
+productNumber: 3
+delivered: true
+```
+
+## Output Structure
+
+Return the result in the following structure:
+
+```ts
+{
+  invalidOrders: [
+    {
+      order: RawOrder,
+      reasons: string[]
+    }
+  ],
+  total: number
+}
+```
+
+### Output Rules
+
+* `invalidOrders` contains every invalid order.
+* `order` must always contain the original raw API data.
+* `reasons` must contain all validation errors found for that order.
+* `total` represents the total number of invalid orders, not a monetary amount.
+* If there are no invalid orders:
+
+  * `invalidOrders` should be an empty array.
+  * `total` should be `0`.
+  * Print exactly:
+
+```text
+כל ההזמנות תקינות המשך יום נעים
+```

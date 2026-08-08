@@ -1,0 +1,23 @@
+#3: multi-turn conversation and why you manage history.
+
+Since the API is stateless, a "conversation" is really just you re-sending an ever-growing messages array. If the user asks a follow-up question, the model can only understand it in context if you include everything that came before — including the model's own previous replies, added back in as role: "assistant".
+
+Concretely, turn 2 of a conversation looks like this:
+
+typescript
+{
+  model: "claude-sonnet-4-6",
+  max_tokens: 1000,
+  system: "...",
+  messages: [
+    { role: "user", content: "What's the capital of France?" },
+    { role: "assistant", content: "The capital of France is Paris." },
+    { role: "user", content: "What's its population?" }
+  ]
+}
+
+Notice: the model never "saw" its own first answer get stored anywhere. You took the text out of the response, wrapped it as an assistant message, and put it back in. If you forget to do this — if you only ever send the latest user message — the model has no idea what "its" refers to in "what's its population."
+
+Exercise: Write a function addTurn that takes the current message history (Message[]), a role, and new content, and returns a new array with the message appended — not mutating the original array. Then write a second function buildRequest that takes a history array and returns a full RequestBody-shaped object ready to send (you can hardcode model, max_tokens, and system as constants inside it).
+
+Think about why "don't mutate" matters here specifically, given what you now know about how history gets built up turn by turn — I'll ask you after you write it.

@@ -1,0 +1,12 @@
+Day 1 Capstone
+
+Write a small TypeScript script that:
+
+Fetches data from a real public API (no auth required — e.g. a joke API like https://official-joke-api.appspot.com/random_joke, or an exchange-rate API, your choice).
+Defines an interface describing the shape of the response you expect — no any.
+Uses async/await (not .then()) to get the data.
+Prints a formatted result to the console using the typed fields.
+
+You'll need fetch (built into modern Node) and to type the response. One thing to be aware of going in: response.json() returns Promise<any> by default — TypeScript doesn't know the shape of an API response automatically. You'll need to assert the type yourself, e.g. const data = (await response.json()) as YourInterface;. We haven't covered as (type assertions) yet, but you'll need it here — think of it as you telling TypeScript "trust me, this is the shape," since TypeScript can't verify that on its own (this is also exactly why Day 2 exists — trusting an API blindly is risky, and you'll learn how to actually validate it rather than just assert it).
+
+Give this a real try — pick an API, write the interface, and post your full script. This one's meant to take a bit longer since it ties everything from today together.

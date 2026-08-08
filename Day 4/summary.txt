@@ -1,0 +1,119 @@
+# Day 4 — Working Correctly with AI Coding Tools
+
+## Core Principle
+
+AI coding tools should increase your speed, not replace your understanding.
+
+You are still responsible for:
+
+* The requirements.
+* The architecture.
+* The correctness.
+* The final code.
+
+## 1. Write Precise Prompts
+
+A good coding prompt should define:
+
+* What the input looks like.
+* What the expected output is.
+* The important business rules.
+* Important edge cases.
+* What should happen on failure.
+
+Be **precise, not unnecessarily long**.
+
+Ask yourself:
+
+> What important decision would the AI have to guess?
+
+If the answer matters, specify it.
+
+## 2. Do Not Trust Generated Code Because It Compiles
+
+Always separate:
+
+**Compiles ≠ Runs correctly ≠ Matches the requirement**
+
+Read generated code and compare it directly against the spec.
+
+## 3. Review AI Code Like a PR
+
+When you find a problem, identify:
+
+* The exact problem.
+* An input that exposes it.
+* The requirement it violates.
+
+Do not review based only on whether the code "looks reasonable."
+
+Also avoid false positives: always review against the **latest version of the spec**.
+
+## 4. Correct the Tool Precisely
+
+Do not write:
+
+`Fix this.`
+
+A good correction explains:
+
+* What is wrong.
+* Why it is wrong.
+* What case exposes it.
+* What behavior should replace it.
+* What existing responsibilities should remain unchanged.
+
+Fix the underlying rule, not only one failing example.
+
+## 5. Keep Responsibilities Separate
+
+Prefer clear boundaries between functions.
+
+For example:
+
+```text
+External data
+↓
+Runtime validation
+↓
+Normalization
+↓
+Business validation
+↓
+Processing
+```
+
+Each function should have one clear responsibility.
+
+## 6. Never Automatically Trust External Data
+
+TypeScript types do not validate API responses at runtime.
+
+A good rule:
+
+**External data starts as `unknown`. Validation earns the type.**
+
+## 7. Know When to Write It Yourself
+
+Use stronger personal control for:
+
+* Architecture.
+* Trust boundaries.
+* Security decisions.
+* Core data flow.
+* Important interfaces.
+
+AI is more suitable for smaller, well-defined implementation tasks.
+
+Stop prompting and write it yourself when:
+
+* You are losing understanding.
+* The correction loop becomes inefficient.
+* Writing the code would be faster.
+* You cannot confidently explain or modify the generated solution.
+
+## Final Rule
+
+**Use AI as an implementation partner and reviewer, not as the owner of the code.**
+
+You should always be able to explain what was built, why it works, where it can fail, and how to change it.

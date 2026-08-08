@@ -1,0 +1,37 @@
+Day 1: Why TypeScript, and basic types
+
+The core idea: TypeScript is JavaScript plus a type-checking layer that runs before your code executes. It doesn't exist at runtime — it gets erased/compiled down to plain JavaScript. Its whole job is to catch mistakes at compile-time (or really, at edit-time in your editor) rather than letting them surface as bugs when the code actually runs.
+
+Concretely, this means: if you write a function that expects a number, and somewhere else in a 2000-line codebase you accidentally pass it a string, TypeScript flags it immediately — you don't find out three weeks later when a customer hits that code path in production.
+
+Basic type annotations:
+
+typescript
+let age: number = 30;
+let name: string = "Dana";
+let isActive: boolean = true;
+
+The : number part is the annotation — you're telling the compiler "this variable will only ever hold a number." If you later try age = "thirty", TypeScript errors immediately.
+
+But here's the thing most people new to TS miss: you often don't need to write annotations explicitly, because TypeScript infers the type from the initial value:
+
+typescript
+let age = 30; // TypeScript infers this is `number`, no annotation needed
+
+If you try age = "thirty" after this, it still errors — same protection, less typing. The convention in real TS code is: let inference do the work when it can, and only add explicit annotations when TypeScript can't figure it out on its own (like function parameters, which we'll hit on Day 3).
+
+One more foundational thing — the any type. It exists, and it turns off type checking for that variable entirely:
+
+typescript
+let mystery: any = 30;
+mystery = "now I'm a string"; // no error, TS won't complain
+
+any is basically an escape hatch back to plain JavaScript. It's very easy to overuse when you're learning, and it defeats the entire point of using TypeScript. For now: treat any as something to avoid unless you genuinely can't type something.
+
+Exercise
+
+Write TypeScript variable declarations (with or without explicit annotations — your call) for:
+
+A product's price (a number)
+A product's SKU code (a string)
+Whether a product is in stock (a boolean)

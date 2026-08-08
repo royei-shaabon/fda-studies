@@ -1,0 +1,41 @@
+Next: Objects and describing their "shape"
+
+So far we've only typed single values. Real data is objects — a product isn't just a price, it's a price and a SKU and a stock status, bundled together. TypeScript lets you describe the shape of an object two ways: inline, or with a reusable named type.
+
+Inline (works, but gets messy fast):
+
+typescript
+let product: { price: number; sku: string; inStock: boolean } = {
+  price: 19.99,
+  sku: "12E321D",
+  inStock: true,
+};
+
+Named, with interface (the more common, reusable way):
+
+typescript
+interface Product {
+  price: number;
+  sku: string;
+  inStock: boolean;
+}
+
+let product: Product = {
+  price: 19.99,
+  sku: "12E321D",
+  inStock: true,
+};
+
+The interface is just a named description of shape — "anything called a Product must have these fields with these types." If you leave out a field, give the wrong type, or add a field that isn't declared, TypeScript errors. This is the exact mechanism you'll use constantly once we get to Day 2 (raw data → structured data) — an interface is how you say "this is what clean data is supposed to look like."
+
+Exercise
+
+Define an interface called Order with three fields:
+
+orderId — a string
+total — a number
+isPaid — a boolean
+
+Then create a variable of type Order with real values.
+
+Try it, and also tell me: what happens (in your own prediction, before running it) if you create an object missing the isPaid field and assign it to a variable typed as Order?

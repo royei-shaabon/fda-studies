@@ -1,0 +1,10 @@
+#2: system prompts vs. user messages.
+
+These are not interchangeable ways to say the same thing, even though both end up as text the model reads. The distinction:
+
+system sets persistent behavior/role/constraints for the entire conversation — tone, format rules, what the model is, what it should never do. It's not part of the visible conversation turn structure; it's more like configuration.
+messages (user/assistant) is the actual back-and-forth content — the specific question, the specific answer, the specific follow-up.
+
+A common mistake (including one you'll see in take-home solutions from less careful engineers) is cramming everything into the first user message — instructions, persona, and the actual question — instead of separating stable configuration from the actual turn-by-turn exchange. This matters practically: if you're building anything that re-sends conversation history on every call (which you will, per what I just said about statelessness), you don't want to be re-stating "you are a helpful assistant that only responds in JSON" inside every single user turn — that's what system is for, sent once per request, cleanly separated.
+
+Exercise: You're building a support-ticket triage feature. The model should always respond with a single word — one of "billing", "technical", "account", "other" — and nothing else, no explanation, no punctuation. It receives one ticket description per call. Write the actual system string and the actual messages array you'd send for one example ticket ("I was charged twice for my subscription this month"). Don't write the TypeScript type again — write the literal request content, as if constructing the real API call.

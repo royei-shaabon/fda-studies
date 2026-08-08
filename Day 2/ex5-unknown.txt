@@ -1,0 +1,52 @@
+Runtime shape validation — why as isn't actually safe
+
+This is an important one, and it connects directly back to something from Day 1. Remember the capstone, where you wrote:
+
+typescript
+const data = (await response.json()) as Joke;
+
+I want to be direct about something now that wasn't fully explained then: as doesn't check anything at runtime. It's purely a compile-time instruction to TypeScript: "trust me, treat this as a Joke." If the actual API response doesn't match — missing fields, wrong types, a completely different shape — TypeScript won't catch it, and your code will crash or misbehave when you try to use fields that don't actually exist.
+
+Example of this going wrong:
+
+typescript
+interface Joke {
+  setup: string;
+  punchline: string;
+}
+
+const fakeApiResponse = { error: "rate limited" }; // API returned an error object instead
+
+const data = fakeApiResponse as Joke; // TypeScript allows this! No error!
+console.log(data.setup.toUpperCase()); // crashes at runtime: "Cannot read properties of undefined"
+
+TypeScript happily compiles this. as is an assertion, not a guarantee — it silences the type checker without verifying anything. This is a real, common source of production crashes when consuming external APIs.
+
+The fix: write an actual runtime check — a function that inspects the real object at runtime and confirms it matches the expected shape before you trust it.
+
+typescript
+function isJoke(data: unknown): data is Joke {
+  return (
+    typeof data === "object" &&
+    data !== null &&
+    "setup" in data &&
+    "punchline" in data &&
+    typeof (data as any).setup === "string" &&
+    typeof (data as any).punchline === "string"
+  );
+}
+
+Notice: the parameter type is unknown, not any or Joke. unknown means "this could be literally anything — you must prove what it is before TypeScript lets you use it as something specific." This is the type-safe way to receive data you don't yet trust (versus any, which just turns off checking entirely). This function is a type predicate again (data is Joke), same mechanism as isProduct from before — except this time it's actually inspecting real properties at runtime, not just checking !== null.
+
+Usage:
+
+typescript
+const raw = await response.json(); // type: any (from .json())
+if (isJoke(raw)) {
+  console.log(raw.setup.toUpperCase()); // safe — TypeScript knows raw is Joke here
+} else {
+  console.log("Unexpected response shape");
+}
+Exercise
+
+Write isProduct4Raw(data: unknown): data is RawProduct4 — a real runtime type-guard that checks whether an unknown value has the shape of RawProduct4 (recall: product_name?, price_cents?, in_stock? — all optional strings). Since all three fields are optional, think carefully about what actually needs to be checked here — what would even make something not a valid RawProduct4?

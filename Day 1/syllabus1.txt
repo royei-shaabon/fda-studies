@@ -1,0 +1,9 @@
+#	Topic✅
+1	Basic types & inference vs annotation✅
+2	Objects & interface (required fields, ? optional)✅
+3	type aliases vs interface, string-literal unions✅
+4	Functions: parameter typing, return types, optional/default params✅
+5	Arrow functions (syntax + typing, how they differ from regular functions)✅
+6	Running TypeScript locally (tsx/ts-node, what package.json is for)✅
+7	Async/await & Promises (what they are, typing a Promise<T>)
+8	Capstone exercise: small CLI script that fetches from a real public API and prints a typed result, using an interface instead of any

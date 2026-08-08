@@ -1,0 +1,21 @@
+Next: Missing fields (not just malformed values)
+
+So far we've handled fields that are present but wrong (a bad string that fails to parse). Now the harder, more realistic case: fields that are absent entirely — which is extremely common with real APIs (a field is optional in the schema, or a particular record just didn't include it).
+
+Here's a raw shape where fields might not even exist on the object:
+
+typescript
+interface RawProduct2 {
+  product_name?: string;   // might be missing
+  price_cents?: string;    // might be missing
+  in_stock?: string;       // might be missing
+}
+
+Note the ? on the raw interface fields — this is different from before. Here it's honest: the source data genuinely might not include these keys at all, and your code needs to handle undefined, not just bad strings.
+
+Exercise
+Write normalizeProduct3(raw: RawProduct2): Product | null that:
+Returns null if product_name is missing or price_cents is missing.
+Treats a missing in_stock as false (default assumption: not in stock if unknown).
+Still handles a malformed (non-numeric) price_cents the same way as before (null).
+Test it against three cases: one fully valid, one missing product_name entirely, one missing in_stock entirely.

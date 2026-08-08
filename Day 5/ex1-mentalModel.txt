@@ -1,0 +1,28 @@
+1. The mental model
+
+When you call an LLM API (Claude's, OpenAI's, whichever), you're not opening a persistent conversation with a running program. Each call is stateless: you send a full array of messages, the model reads that entire array as its only context, and it returns one response. There is no server-side memory of your last call unless you built it yourself.
+
+A basic request body looks roughly like this (Claude's Messages API shape):
+
+typescript
+{
+  model: "claude-sonnet-4-6",
+  max_tokens: 1000,
+  system: "You are a helpful assistant.",   // optional, separate from messages
+  messages: [
+    { role: "user", content: "What's the capital of France?" }
+  ]
+}
+
+And the response contains a content array — not a single string — because a response can contain multiple typed blocks (text, tool calls, etc., which you'll hit on Day 10):
+
+typescript
+{
+  content: [
+    { type: "text", text: "The capital of France is Paris." }
+  ]
+}
+
+Key fact to internalize now, because it'll matter in a few minutes: messages is an array of {role, content} objects where role is either "user" or "assistant". There is no third role for history — if you want the model to "remember" what it said two turns ago, you put its previous response back into the messages array as an assistant entry on your next call. The model has no memory. You are the memory.
+
+Quick exercise before we go further — write the TypeScript type for a single message object (role + content), and the type for the full request body shown above (model, max_tokens, optional system, messages array). Keep it minimal — just the shape, using what you already know from Days 1–3 (required vs. optional fields, string literal unions for role).

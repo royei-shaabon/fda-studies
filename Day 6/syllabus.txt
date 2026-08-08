@@ -1,0 +1,11 @@
+Day 6: Wrapping Up Tooling — Modules, Environment Setup, and Structured Output
+
+This is the last day before agent-building starts. The goal is to close the practical gaps that would otherwise trip you up the moment you try to run real code against a real API key, outside of hand-written exercises: how TypeScript files actually connect to each other, how secrets are handled, and how to force reliable structured output from a model — which is the backbone of everything from Day 7 onward.
+
+Day 6 syllabus:
+
+1	Modules — import/export, and why it matters for structuring a real project
+2	Running TypeScript with Node (tsx), and the compile-vs-run distinction
+3	Environment variables — never hardcode API keys
+4	Getting structured (JSON) output reliably from an LLM
+5	Capstone: wire it all together — a small multi-file mini-setup

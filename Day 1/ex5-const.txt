@@ -1,0 +1,40 @@
+Correct, precisely stated. Good — that's locked in.
+
+You've now completed Day 1 topic #4 (functions: parameter typing, return types, optional/default params, and the undefined/null distinction, plus caught two real logic bugs of your own). Moving on.
+
+Next: Arrow functions
+
+You've been writing regular function declarations. TypeScript (and modern JavaScript) also has arrow function syntax, which you'll see constantly in real codebases — especially in callbacks, array methods (.map, .filter), and the AI/agent code we'll get to later.
+
+Your applyDiscount function rewritten as an arrow function:
+
+typescript
+const applyDiscount = (price: number, discountPercent?: number): number => {
+  return price - price * ((discountPercent ?? 0) / 100);
+};
+
+Breaking down the differences from what you know:
+
+const applyDiscount =  — you're assigning the function to a variable, not declaring it with the function keyword.
+(price: number, discountPercent?: number) — parameters, typed exactly the same way as before.
+: number — return type, same as before, placed right before =>.
+=> — the "arrow," separating the parameter list from the function body.
+{ return ... } — same body as a regular function.
+
+A shorthand exists for simple one-line bodies — if the function body is just a single return expression, you can drop the braces and the return keyword entirely:
+
+typescript
+const applyDiscount = (price: number, discountPercent?: number): number =>
+  price - price * ((discountPercent ?? 0) / 100);
+
+This is called an "implicit return" — the expression right after => is automatically returned. It's very common in short callbacks (you'll see this constantly in .map()/.filter() later), but for longer logic, the { } + return form is clearer and generally preferred.
+
+There's one more real difference between function and arrow functions — how they handle this — but that matters much more in object-oriented/class code, and won't come up much in what you're building, so I'll skip it unless it becomes relevant later.
+
+Exercise
+Rewrite this regular function as an arrow function, keeping the full { return } body (not the implicit-return shorthand):
+typescript
+function isEligibleForFreeShipping(orderTotal: number, minimumThreshold: number): boolean {
+  return orderTotal >= minimumThreshold;
+}
+Then rewrite it again using the implicit-return shorthand (no braces, no return keyword).

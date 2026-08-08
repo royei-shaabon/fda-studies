@@ -1,0 +1,37 @@
+Topic 4: iterative correction — telling the tool what's wrong, not just "fix it."
+
+This is a specific, common failure mode: someone finds a bug (like you just did), types "this is wrong, fix it" into the tool, and gets back code that either fixes the wrong thing, half-fixes it while breaking something else, or "fixes" it in a way that passes the one case you mentioned but not the underlying problem. The tool has no access to your reasoning — only to what you type.
+
+The discipline: a correction should contain the same three things your bug reports just did — the specific problem, the specific input that exposes it, and (often) the specific rule from the spec it violates. "Fix it" gives the tool nothing to work with except guessing.
+
+Exercise: Take the unknown[] / type-guard fix you just described, and write it as an actual correction message you'd send to the tool that produced the flawed code — as if you're now talking to Claude Code, telling it to revise processOrders and friends. Don't write the TypeScript yourself; write the instruction precisely enough that a literal tool implementing it would end up in the right place, including what the type guard itself needs to check.
+
+
+ANSWER:
+`processOrders` currently trusts the API input too early by accepting `RawOrder[]`. If the API returns malformed or unexpected data, the code may fail at runtime.
+
+Change the entry point to accept `unknown[]`.
+
+Add a runtime type guard:
+
+`isRawOrder(data: unknown): data is RawOrder`
+
+The type guard must first verify that `data` is a non-null object and not an array. Only after that should it check the required fields and their runtime types:
+
+* `index`: string
+* `customerName`: string
+* `productNumber`: string
+* `products`: array containing only strings
+* `delivered`: string
+
+Do not check business rules such as positive numbers, duplicate indexes, or `productNumber === products.length` inside the type guard. Those rules should remain in `validateOrder`.
+
+Only pass data to `normalizeOrder` after it successfully passes `isRawOrder`.
+
+If an item fails `isRawOrder`, do not silently skip it. Add it to `invalidOrders` with a reason such as `"Malformed raw order"` so every invalid API item is represented in the final result.
+
+Keep the existing separation of responsibilities:
+
+* `isRawOrder` → runtime shape and type validation
+* `normalizeOrder` → type conversion
+* `validateOrder` → business validation

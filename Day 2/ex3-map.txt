@@ -1,0 +1,30 @@
+Array transformation: .map() + filtering out nulls correctly
+
+Here's the trap. Say you have an array of raw products and you map them through normalizeProduct1:
+
+typescript
+const rawProducts: RawProduct[] = [ /* ... some valid, some invalid ... */ ];
+
+const results = rawProducts.map(normalizeProduct1); // type: (Product | null)[]
+
+const filtered = results.filter((p) => p !== null); // you'd expect Product[] now...
+
+Here's the catch: if you check filtered's type, in many TypeScript configurations it's still (Product | null)[], not Product[] — even though you just filtered out all the nulls at runtime! TypeScript's type checker isn't smart enough by default to know that your filter callback actually removes every null. So if you later try filtered[0].price, TypeScript will still complain that price might not exist on null.
+
+The fix: a type predicate. You write the filter callback with a special return type annotation that tells TypeScript "if this returns true, the input's type is narrowed to Product":
+
+typescript
+function isProduct(p: Product | null): p is Product {
+  return p !== null;
+}
+
+const filtered = results.filter(isProduct); // now correctly typed as Product[]
+
+The p is Product syntax is called a type predicate — it's a special return type that only makes sense on functions used for narrowing (usually in if checks or .filter()). It says: "trust me, if this function returns true, treat p as a Product from here on."
+
+Exercise
+Create an array of at least 4 RawProduct objects — mix valid and invalid price_cents values (some parseable, some not).
+Run them through .map(normalizeProduct1).
+Write the isProduct type predicate function and use it with .filter() to get a properly-typed Product[].
+Calculate and log the average price across the filtered, valid products.
+Tell me: without the type predicate (just using a plain (p) => p !== null filter callback), would the average-price calculation in step 4 actually compile in strict TypeScript? Why or why not?

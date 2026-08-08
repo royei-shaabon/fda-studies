@@ -1,0 +1,28 @@
+Both fixed correctly. The bug's gone, and the validation now actually checks the type of text before trusting it, not just its presence — that's the right fix. Minor note, not required to change: you could also check firstBlock.type === "text" before checking .text, since a tool_use block might coincidentally have some unrelated text-named field in future API versions — but checking the actual field type you're about to return is the load-bearing check, and you did that correctly. Good.
+
+On to #5, the last topic: streaming.
+
+Everything so far assumed the response arrives all at once — you await response.json() and get the full text in one shot. Streaming is different: instead of waiting for the complete response, the server sends the response in small chunks as the model generates them, and your code processes each chunk as it arrives. This is what makes ChatGPT/Claude's UI show text appearing word-by-word instead of all at once after a pause.
+
+Why this isn't just a UX detail — it changes your code's shape:
+
+Non-streaming: one await, one parse, one return value. Simple, linear.
+Streaming: you get a stream of events over time, each one a small piece (a token or few), and you are responsible for accumulating them into the full text as they arrive — there's no single "final response object" handed to you at the end unless you build it yourself by concatenating chunks.
+
+This matters for your take-home/interview specifically: if you're building something that displays output progressively, or that needs to react to partial output (e.g., detecting an early signal in a long generation), you need streaming. If you just need the final answer to feed into more code, non-streaming is simpler and you shouldn't reach for streaming just because it's "how the real apps do it."
+
+Real streaming with Anthropic's SDK looks conceptually like this (simplified, not exact SDK syntax):
+
+typescript
+const stream = await anthropic.messages.stream({ model, max_tokens, messages });
+
+let fullText = "";
+for await (const event of stream) {
+  if (event.type === "content_block_delta") {
+    fullText += event.delta.text;
+    console.log(event.delta.text); // process each chunk as it arrives
+  }
+}
+// fullText now has the complete response, built up piece by piece
+
+Comprehension check, no code yet: given everything we just covered about sendMessage returning Promise<string> — if you converted it to a streaming version, would the return type Promise<string> still make sense? Why or why not, and what would you actually want the function's signature/behavior to look like if a caller needs to both see chunks as they arrive and eventually get the full accumulated text?

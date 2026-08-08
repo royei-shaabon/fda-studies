@@ -1,0 +1,76 @@
+Writing a scoring function with explicit, explainable criteria
+
+This is the heart of your take-home requirement — "deterministic scoring or ranking logic," and it needs to be explainable, not a black box. Let's build the pattern properly.
+
+The core idea: a scoring function takes a structured record and returns a number (or a number + explanation) representing how well it performs against criteria you define. The key discipline: each criterion should be a clear, named, isolated piece of logic — not one tangled formula — so you can explain why something scored the way it did.
+
+Example — scoring airports for "terminal expansion investment potential" using two criteria: high passenger volume is good, high delay rate is bad (congestion signals need for expansion, but also risk):
+
+typescript
+interface Airport {
+  code: string;
+  name: string;
+  passengers: number;
+  delayRatePercent: number;
+}
+
+function scorePassengerVolume(airport: Airport): number {
+  // simple normalization: 1 point per million passengers
+  return airport.passengers / 1_000_000;
+}
+
+function scoreDelayPenalty(airport: Airport): number {
+  // higher delay rate = bigger penalty
+  return -airport.delayRatePercent * 0.5;
+}
+
+function scoreAirport(airport: Airport): number {
+  return scorePassengerVolume(airport) + scoreDelayPenalty(airport);
+}
+
+Notice the structure: each criterion is its own named function, and the final score composes them. This matters for two reasons: (1) it's easy to explain each piece separately ("this airport scored high because of passenger volume, despite a delay penalty"), and (2) it's easy to test/adjust one criterion without touching the others — exactly what you'd want when an interviewer asks "what if we weighted delay more heavily?"
+
+Exercise
+
+Using the airports array from the first exercise today (Boston, Providence, Bradley, Manchester), write:
+
+scoreCapacityUtilization: a function that scores airports higher when they have fewer delays relative to passenger volume — specifically, define it as passengers / 1_000_000 - delayRatePercent (i.e., raw passenger score minus straight delay penalty, no multiplier this time — keep it simple).
+scoreAirport: combine it (for now, just this one criterion — we'll add a second criterion in the next exercise).
+Calculate and log the score for all four airports.
+Tell me: which airport scores highest, and does that make intuitive sense given the data (Boston has huge passenger volume but also the highest delay rate)?
+
+
+
+פתרון עם 2 פונקציות:
+
+interface Airport2 {
+  code: string;
+  name: string;
+  passengers: number;
+  delayRatePercent: number;
+}
+
+const airports2: Airport2[] = [
+  { code: "BOS", name: "Boston Logan", passengers: 12_500_000, delayRatePercent: 18 },
+  { code: "PVD", name: "Providence", passengers: 2_100_000, delayRatePercent: 9 },
+  { code: "BDL", name: "Bradley", passengers: 3_400_000, delayRatePercent: 12 },
+  { code: "MHT", name: "Manchester-Boston", passengers: 1_800_000, delayRatePercent: 7 },
+];
+
+function scoreCapacityUtilization(airport: Airport2): number {
+  return airport.passengers / 1_000_000;
+}
+
+function scoredelayRatePercent(airport: Airport2): number {
+  return -airport.delayRatePercent;
+}
+
+function scoreAirport(airport: Airport2): number {
+  return scoreCapacityUtilization(airport) + scoredelayRatePercent(airport);
+}
+
+const airportScore = airports2.map((airport) => {
+    return [airport.name, scoreAirport(airport)];
+});
+
+console.log(airportScore);

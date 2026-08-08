@@ -1,0 +1,23 @@
+Topic 5: When to write it yourself instead of prompting
+
+You've now spent this whole session doing the two things that make these tools safe to use: writing precise specs, and reviewing output against them. But there's a judgment call underneath both of those — sometimes the right move isn't a better prompt or a sharper correction, it's just writing the code yourself.
+
+Think about today's exercise. The bug you found in Topic 3 — RawOrder[] instead of unknown[] — wasn't a typo or a one-line fix. It was a structural decision about where trust boundaries live in the whole program. The type guard, the "don't check business rules in the guard" separation, the "malformed items still show up in output" rule — none of that is something you'd want to iterate into existence through five rounds of "fix it, no not like that." At some point the cost of specifying something precisely enough for a tool to build it correctly exceeds the cost of just building it yourself, especially for the architecture — the shape of the trust boundary, not the implementation of one function inside it.
+
+Question for you, and I want a real answer, not a platitude: based on everything you did today — writing the spec, reviewing the flawed code, writing corrections — where do you think that line sits? Is it about the size of the change, the type of the change (architecture vs. implementation), how confident you are in the tool's output, something else? Give me your actual reasoning, not "it depends."
+
+
+ANSWER:
+Since I am still relatively junior, I will probably use multiple tools to help me verify AI-generated code — for example, one tool to generate, another to review, and another to help improve the specification or correction prompt.
+
+However, I would not treat agreement between tools as proof that the code is correct. I still need to understand the solution well enough to explain it, test it, and change it myself.
+
+For me, the line is mainly about efficiency and control. If prompting and correcting the tool becomes more complicated or time-consuming than writing the code myself, or if I feel that I am losing understanding of the implementation, I would stop iterating with the AI and write that part myself.
+
+I would still use AI afterward as a reviewer, but I would remain responsible for the final code and the architectural decisions.
+
+
+Yes — architecture is a separate factor in my decision.
+If a change affects a structural decision, such as where the system's trust boundary lives, I want much tighter control over it myself. In today's example, I would prefer to write the unknown[] entry point and the type guard myself, because that decision affects the whole flow of the program.
+For smaller implementation tasks, I would be more comfortable letting the LLM generate the code and then reviewing it.
+Even for architectural code I write myself, I would still use AI as a reviewer and test the implementation against edge cases before trusting it.

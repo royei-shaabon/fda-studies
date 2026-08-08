@@ -1,0 +1,12 @@
+Day 5: LLM APIs — messages, system prompts, streaming
+
+This is where we shift from "TypeScript as a language" to "TypeScript as the thing that talks to a model." Everything from here through Day 12 builds on this. It's also directly relevant to your take-home if it involves any LLM calls at all.
+
+Day 5 syllabus:
+
+#	Topic	Exercise
+1	The API mental model: what a "message" actually is, request/response shape
+2	System prompts vs. user messages — what each actually controls
+3	Multi-turn conversation — why you manage history, not the API
+4	Typing the request/response with TypeScript, error handling
+5	Streaming — what it is, why it's different in code, not just in UX

@@ -1,0 +1,16 @@
+There are a few real strategies for handling this, and picking the right one matters:
+
+Skip/filter the bad record — if one product is malformed, drop it from the array rather than poisoning your dataset. Good when a few bad records are acceptable to lose.
+Fall back to a default value — e.g. treat malformed price as 0 or null. Risky if that default gets silently treated as real data (a "$0 product" might look like a legitimate free item).
+Throw/reject the record explicitly — force the caller to know this record failed, rather than quietly returning a broken object.
+Return null/undefined for that specific field, and make your Product type honestly reflect that the field might be missing — pushing the "what do I do about it" decision to wherever the data is actually used.
+
+There's no single universally "correct" choice — it depends on what you're building. For something like an investment-ranking agent (hint, hint), silently defaulting a broken number to 0 could badly skew a ranking. Being explicit about failure is usually safer than guessing.
+
+Exercise
+
+Rewrite normalizeProduct so it returns Product | null — meaning: if price_cents can't be parsed into a valid number (i.e., it's NaN), the function returns null instead of a broken Product.
+
+Update the function signature to function normalizeProduct(raw: RawProduct): Product | null
+Add the check for invalid parsed price using isNaN()
+Test it with both a valid and an invalid RawProduct, and show me you handle the null case when calling it (don't just call it and assume it worked — TypeScript will actually force you to handle this if you try to access .price on something typed Product | null)

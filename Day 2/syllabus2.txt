@@ -1,0 +1,6 @@
+1	Raw shape vs. clean target shape, basic transform function (type coercion: string→number, string→boolean)
+2	Handling malformed values safely (Product | null, Number.isNaN, type narrowing)
+3	Transforming an array of raw records: .map() + filtering out nulls properly (the filter + type-narrowing trick, since a naive filter doesn't narrow the array's type automatically)
+4	Handling genuinely missing fields (not just malformed — e.g. a field absent from the object entirely, undefined, optional raw fields)
+5	Runtime shape validation — why "trust the API" fails even with as assertions, and a basic hand-rolled validator (a preview of what a library like zod automates, without needing the library yet)
+6	Capstone: take a deliberately messy array of raw records (missing fields, wrong types, some genuinely broken) and produce a clean, fully-typed array — this is the direct rehearsal of your technical interview's "raw → structured" step

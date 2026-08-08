@@ -1,0 +1,66 @@
+Day 2: Raw Data → Structured Data
+
+This is the topic worth taking most seriously — your technical interview explicitly names this pattern: take messy raw input, transform it into something structured and typed, then use it. Let's build real fluency here, not just theory.
+
+The core problem: real-world data — from APIs, CSVs, scraped sources, whatever — is almost never clean. Fields are missing, named inconsistently, wrong types show up (a number arrives as a string), nested structures vary, and sometimes entries are just malformed junk. Your job is to turn that mess into something your program can trust and work with safely.
+
+Step one: separate "what the data looks like coming in" from "what you want it to look like." These are two different types.
+
+Example — imagine this raw data from some flaky airport API:
+
+typescript
+const rawAirport = {
+  airport_name: "Boston Logan",
+  code: "BOS",
+  passengers_2023: "12500000", // a string, not a number!
+  runways: 6,
+  international: "yes", // not a real boolean
+};
+
+You'd define two interfaces: one describing the raw shape (messy, as-received), and one describing your clean target shape:
+
+typescript
+interface RawAirport {
+  airport_name: string;
+  code: string;
+  passengers_2023: string; // it really is a string in the source
+  runways: number;
+  international: string;
+}
+
+interface Airport {
+  name: string;
+  code: string;
+  passengers: number;      // coerced from string
+  runways: number;
+  isInternational: boolean; // coerced from "yes"/"no" string
+}
+
+Then you write a transform function that converts one to the other:
+
+typescript
+function normalizeAirport(raw: RawAirport): Airport {
+  return {
+    name: raw.airport_name,
+    code: raw.code,
+    passengers: parseInt(raw.passengers_2023, 10),
+    runways: raw.runways,
+    isInternational: raw.international.toLowerCase() === "yes",
+  };
+}
+
+This is the whole pattern in miniature: type the mess, type the target, write a function that bridges them. We'll add the harder part next — handling missing or malformed fields, not just mismatched types — but let's confirm this base case first.
+
+Exercise
+
+Given this raw shape:
+
+typescript
+interface RawProduct {
+  product_name: string;
+  price_cents: string;   // price stored as a string, in cents (e.g. "1999" = $19.99)
+  in_stock: string;      // "1" or "0"
+}
+Define a clean target interface Product with sensible field names and correct types (price should end up as a number in dollars, not cents; in_stock should end up as a boolean).
+Write normalizeProduct(raw: RawProduct): Product that converts one to the other correctly.
+Test it with { product_name: "Widget", price_cents: "1999", in_stock: "1" } and tell me what the output should be.

@@ -1,0 +1,24 @@
+Day 2 Capstone
+
+This is the direct rehearsal of your technical interview's "raw data → structured data" step, so treat it like the real thing.
+
+Here's a deliberately messy array — simulating something like a scraped or third-party API response:
+
+typescript
+const messyData: unknown[] = [
+  { product_name: "Widget", price_cents: "1999", in_stock: "1" },
+  { product_name: "Gadget", price_cents: "abc", in_stock: "0" }, // malformed price
+  { price_cents: "500", in_stock: "1" }, // missing product_name
+  { product_name: "Thingamajig", price_cents: "2500" }, // missing in_stock
+  "not even an object", // completely wrong shape
+  null,
+  { product_name: 123, price_cents: "999", in_stock: "1" }, // wrong type for product_name
+];
+
+Your task:
+
+Write a runtime type-guard isValidRawShape(data: unknown): data is RawProduct4 (reuse/adapt what you just built, but it needs to reject product_name: 123 — a wrong type, not just missing).
+Write a full pipeline: filter messyData down to values that pass the type-guard, normalize each surviving one with your existing normalizeProduct4-style logic (missing-field handling + malformed-price handling), filter out any null results from that step too, and end up with a clean Product[].
+Log the final clean array, and tell me how many of the 7 original entries survived, and why each rejected one was rejected.
+
+This ties together everything from today: type-guards on unknown, optional field handling, malformed value handling, array transformation with proper narrowing. Take your time.

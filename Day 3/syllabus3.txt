@@ -1,0 +1,11 @@
+Structured Data → Using It
+
+This is the second half of the pattern your technical interview names directly — you've spent two days getting messy data into clean, typed structures. Now: writing logic that actually does something with it — ranking, scoring, aggregating, answering a specific question. This is also a direct rehearsal of your take-home's "deterministic scoring or ranking logic" requirement.
+
+Day 3 syllabus:
+
+1	Core array methods for real work: map, filter, reduce, sort
+2	Aggregation / grouping (Excel pivot-table / SQL GROUP BY equivalent)
+3	Writing a scoring function with explicit, explainable criteria
+4	Ranking/sorting by score, returning a clean, explainable result (not just raw numbers)
+5	Capstone: score and rank a small structured dataset against multiple criteria, and produce a human-readable explanation of the ranking — direct rehearsal of your take-home

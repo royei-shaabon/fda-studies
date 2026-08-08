@@ -1,0 +1,34 @@
+1. What Claude Code / Cursor actually do
+
+Both tools put an LLM in a loop with your file system: it can read files, write/edit files, run commands, see the output (errors, test results), and iterate — without you manually copy-pasting between a chat window and your editor.
+
+The critical thing to internalize: the model is not reasoning about your codebase the way you do. It's pattern-matching against enormous amounts of code it's seen, plus whatever context (files, errors) it's been given in this session. That means:
+
+It will confidently write code that's syntactically perfect and logically wrong — same failure mode you already hit twice this week by hand (type-safe ≠ logically correct). The tool doesn't fix that problem, it just moves it up a level.
+It has no persistent memory of your intent unless it's in the prompt or the file. If you don't say it, it doesn't know it.
+It will happily generate a plausible-looking solution to a vague spec rather than asking you what you meant — vagueness gets silently resolved in whatever direction the training data leans, not necessarily your direction.
+
+So the skill isn't "prompt the tool." It's: specify precisely, read everything it produces, and verify it against your own understanding before you trust it — the exact discipline you've been building all week, just aimed at someone else's (the AI's) code instead of your own.
+
+Quick check before we move on — in your own words, what's the actual risk of using a tool like Claude Code carelessly in a live coding interview? Not "it might be slow" — what specifically goes wrong?
+
+
+
+UNSWER:
+the interview isn't the main problem, i wanna address a truely live coding risks with those tools:
+
+if the developer wasn't clear in his prompts - the results will be different from what he meant.
+the developer can not understand whats happens in his code - so he won't know how to fix bugs, he won't have any controle on the standarts of the code and it's safty
+Validated core concerns while contemplating deeper verification mechanisms
+Validated core concerns while contemplating deeper verification mechanisms
+
+
+
+
+
+Both points are right, and point 2 is the more important one — that's the real long-term risk, not just interview performance. Two things to sharpen:
+
+Correct, and worth being precise about why it happens: the model doesn't ask clarifying questions by default — it silently picks an interpretation and runs with it. So "unclear prompt" doesn't fail loudly, it fails quietly with plausible-looking wrong output.
+Also correct, and I'd add one more piece you didn't name: even if the developer could understand the code, if they never actually read it — just accepted it because it ran without errors — they're in the same position. "Ran without errors" and "correct" are not the same thing, same as this week's TypeScript lesson. The failure mode isn't just "can't understand it," it's "didn't bother to check."
+
+So there's really a third risk sitting underneath both of yours: no verification step. A dev who reads the code but never traces the logic, or never writes a test that would catch a wrong edge case, is exposed the same way as one who didn't read it at all.

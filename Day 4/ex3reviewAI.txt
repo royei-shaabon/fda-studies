@@ -1,0 +1,128 @@
+Reviewing AI-generated code like a reviewer
+
+Below is code an AI tool produced against roughly your spec (the order-validation one). It compiles. It looks reasonable at a glance. Your job: review it like you'd review a PR before merging — not "does it run," but "does it match the spec, line by line."
+
+typescript
+interface RawOrder {
+  index: string;
+  customerName: string;
+  productNumber: string;
+  products: string[];
+  delivered: string;
+}
+
+interface Order {
+  index: number;
+  customerName: string;
+  productNumber: number;
+  products: string[];
+  delivered: boolean;
+}
+
+interface InvalidEntry {
+  order: RawOrder;
+  reasons: string[];
+}
+
+interface ProcessResult {
+  invalidOrders: InvalidEntry[];
+  total: number;
+}
+
+function normalizeOrder(raw: RawOrder): Order | null {
+  const index = Number(raw.index);
+  const productNumber = Number(raw.productNumber);
+  let delivered: boolean;
+
+  if (raw.delivered === "true" || raw.delivered === "1") {
+    delivered = true;
+  } else if (raw.delivered === "false" || raw.delivered === "0" || raw.delivered === "") {
+    delivered = false;
+  } else {
+    return null;
+  }
+
+  return { index, customerName: raw.customerName, productNumber, products: raw.products, delivered };
+}
+
+function validateOrder(raw: RawOrder, seenIndexes: Set<number>): string[] {
+  const reasons: string[] = [];
+
+  if (!raw.index || !raw.customerName || !raw.productNumber || !raw.products || !raw.delivered) {
+    reasons.push("Missing required field");
+    return reasons;
+  }
+
+  const index = Number(raw.index);
+  if (isNaN(index) || index <= 0 || !Number.isInteger(index)) {
+    reasons.push("Invalid index");
+  } else if (seenIndexes.has(index)) {
+    reasons.push("Duplicate index");
+  } else {
+    seenIndexes.add(index);
+  }
+
+  if (raw.customerName.trim().length === 0) {
+    reasons.push("Invalid customerName");
+  }
+
+  if (!Array.isArray(raw.products) || raw.products.length === 0) {
+    reasons.push("Invalid products array");
+  } else if (raw.products.some(p => p.trim().length === 0)) {
+    reasons.push("Empty product name");
+  }
+
+  const productNumber = Number(raw.productNumber);
+  if (isNaN(productNumber) || productNumber <= 0 || !Number.isInteger(productNumber)) {
+    reasons.push("Invalid productNumber");
+  } else if (productNumber !== raw.products.length) {
+    reasons.push("productNumber does not match products.length");
+  }
+
+  if (!["true", "false", "1", "0", ""].includes(raw.delivered)) {
+    reasons.push("Invalid delivered value");
+  }
+
+  return reasons;
+}
+
+function processOrders(rawOrders: RawOrder[]): ProcessResult {
+  const invalidOrders: InvalidEntry[] = [];
+  const seenIndexes = new Set<number>();
+
+  for (const raw of rawOrders) {
+    const reasons = validateOrder(raw, seenIndexes);
+    if (reasons.length > 0) {
+      invalidOrders.push({ order: raw, reasons });
+    }
+  }
+
+  return { invalidOrders, total: invalidOrders.length };
+}
+
+Find as many real problems as you can — against the spec you wrote, not against your own taste. For each one, tell me: what line, what's wrong, and what input would expose it. Take your time; this is the whole point of the exercise.
+
+
+
+ANSWER:
+### Problems found
+
+**1. Line:** `return { index, customerName: raw.customerName, productNumber, products: raw.products, delivered };`
+**What's wrong:** `normalizeOrder` can return an `Order` containing `NaN` because it does not validate the numeric conversions.
+**Input:** `index: "abc"` or `productNumber: "abc"`.
+
+**2. Line:** `if (!raw.index || !raw.customerName || !raw.productNumber || !raw.products || !raw.delivered)`
+**What's wrong:** `delivered: ""` is valid according to the spec, but this condition treats it as a missing field.
+**Input:** `delivered: ""`.
+
+**3. Line:** `return reasons;` inside the missing-field check.
+**What's wrong:** Validation stops after the first missing-field error, so the function does not collect all failure reasons as required.
+**Input:** An order with a missing `customerName` and an invalid `index`.
+
+**4. Line:** `processOrders()`
+**What's wrong:** `normalizeOrder()` is never called, so the normalization step is completely skipped.
+**Input:** Any valid raw order such as `index: "5"` and `delivered: "true"`.
+
+**5. Line:** `processOrders()` return flow.
+**What's wrong:** The spec requires printing `"All orders are valid. Have a nice day."` when there are no invalid orders, but this case is never handled.
+**Input:** An array containing only valid orders.

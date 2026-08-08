@@ -1,0 +1,43 @@
+Aggregation / grouping
+
+This is your SQL GROUP BY / Excel pivot-table equivalent, done in code. JavaScript/TypeScript has no built-in groupBy in most environments (a newer Object.groupBy exists but isn't universally available yet), so the standard pattern is building groups manually with reduce.
+
+Say you want to group airports by region:
+
+typescript
+interface AirportWithRegion {
+  code: string;
+  region: string;
+  passengers: number;
+}
+
+const data: AirportWithRegion[] = [
+  { code: "BOS", region: "Northeast", passengers: 12_500_000 },
+  { code: "PVD", region: "Northeast", passengers: 2_100_000 },
+  { code: "LAX", region: "West", passengers: 30_000_000 },
+  { code: "SNA", region: "West", passengers: 5_000_000 },
+];
+
+The pattern: use reduce to build up an object where each key is a group, and each value is an array (or aggregate) of the items in that group:
+
+typescript
+const grouped = data.reduce((acc, airport) => {
+  if (!acc[airport.region]) {
+    acc[airport.region] = [];
+  }
+  acc[airport.region].push(airport);
+  return acc;
+}, {} as Record<string, AirportWithRegion[]>);
+
+New syntax here: {} as Record<string, AirportWithRegion[]> — this is the starting accumulator for reduce, an empty object, and we're asserting its type since TypeScript can't infer "this will become a lookup object" from an empty {} on its own. Record<string, AirportWithRegion[]> is a utility type meaning "an object whose keys are strings, and whose values are arrays of AirportWithRegion." We'll cover Record and other utility types properly on a later day — for now, just recognize the pattern.
+
+The result: { Northeast: [BOS, PVD], West: [LAX, SNA] }.
+
+Exercise
+
+Using the same data array above, write a reduce that groups airports by region, but instead of storing the full airport objects, store the total passengers per region — i.e., the result should look like:
+
+typescript
+{ Northeast: 14600000, West: 35000000 }
+
+Write it, run it, and show me the output.

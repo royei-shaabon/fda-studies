@@ -1,0 +1,40 @@
+Next: Functions — typing parameters and return values
+
+This is a good next step because unlike variables, function parameters are never inferred — TypeScript has no value to look at when it sees a parameter, so you must annotate them, or they silently become any. This is a very common beginner mistake to leave unannotated.
+
+typescript
+function calculateTotal(price: number, quantity: number): number {
+  return price * quantity;
+}
+
+Breaking this down:
+
+price: number and quantity: number — parameter annotations, required.
+: number right after the parameter list, before the { — that's the return type annotation. It says "this function must return a number." If your function body returned a string instead, TypeScript would error.
+
+The return type is technically often inferable (TypeScript can look at your return statement and figure it out), so people sometimes omit it. But for named, reusable functions, writing the return type explicitly is common practice — it acts as a contract, and it catches you if you accidentally change the body later in a way that breaks the promise.
+
+One more piece: optional and default parameters.
+
+typescript
+function greet(name: string, greeting?: string): string {
+  return `${greeting ?? "Hello"}, ${name}!`;
+}
+
+function greetWithDefault(name: string, greeting: string = "Hello"): string {
+  return `${greeting}, ${name}!`;
+}
+greeting?: string — optional; if omitted, its value inside the function is undefined.
+greeting: string = "Hello" — has a default value; if omitted, it's "Hello", not undefined.
+
+These solve the same problem slightly differently, and both are common.
+
+Exercise
+
+Write a function called applyDiscount that:
+
+Takes a price (number) and an optional discountPercent (number).
+If discountPercent is not provided, default it to 0.
+Returns the final price after the discount is applied (as a number).
+
+Write it two ways: once using discountPercent?: number with a manual fallback inside the function, and once using a default parameter value instead. Then tell me: functionally, is there any real difference in behavior between the two if someone explicitly calls the function passing undefined for that argument?

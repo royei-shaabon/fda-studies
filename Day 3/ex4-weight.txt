@@ -1,0 +1,30 @@
+Combining multiple weighted criteria + ranking
+
+Real scoring almost always combines several criteria, often with different weights reflecting how much each one matters. Let's add a second criterion and combine them properly.
+
+typescript
+function scorePassengerVolume(airport: Airport2): number {
+  return airport.passengers / 1_000_000;
+}
+
+function scoreDelayPenalty(airport: Airport2): number {
+  return airport.delayRatePercent;
+}
+
+function scoreAirport(airport: Airport2, weights: { volume: number; delay: number }): number {
+  return (
+    scorePassengerVolume(airport) * weights.volume -
+    scoreDelayPenalty(airport) * weights.delay
+  );
+}
+
+Notice scoreAirport now takes a weights parameter — this is important because it means your scoring logic is configurable, not hardcoded. This is exactly the kind of thing an interviewer will push on: "what if I told you delay matters twice as much as volume?" — and you should be able to answer that by changing a number, not rewriting the function.
+
+Exercise
+Use the scorePassengerVolume and scoreDelayPenalty functions above (add them to your file).
+Write scoreAirport with the weights parameter as shown.
+Score all four airports twice: once with { volume: 1, delay: 1 }, once with { volume: 1, delay: 3 } (delay matters 3x more).
+Sort each result set by score descending, and log both rankings.
+Tell me: does the ranking order actually change between the two weightings? Which airport benefits most from delay being weighted less, and which suffers most from it being weighted more?
+
+

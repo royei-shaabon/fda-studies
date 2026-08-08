@@ -1,0 +1,33 @@
+Day 3 Capstone
+
+This is the closest rehearsal yet to your actual take-home. You're going to build a small version of an "airport investment scoring" tool, end to end.
+
+typescript
+interface AirportCandidate {
+  code: string;
+  name: string;
+  region: string;
+  passengers: number;
+  delayRatePercent: number;
+  longHaulFlightPercent: number;
+}
+
+const candidates: AirportCandidate[] = [
+  { code: "BOS", name: "Boston Logan", region: "Northeast", passengers: 12_500_000, delayRatePercent: 18, longHaulFlightPercent: 22 },
+  { code: "PVD", name: "Providence", region: "Northeast", passengers: 2_100_000, delayRatePercent: 9, longHaulFlightPercent: 4 },
+  { code: "BDL", name: "Bradley", region: "Northeast", passengers: 3_400_000, delayRatePercent: 12, longHaulFlightPercent: 8 },
+  { code: "MHT", name: "Manchester-Boston", region: "Northeast", passengers: 1_800_000, delayRatePercent: 7, longHaulFlightPercent: 2 },
+];
+
+Your task — build a full pipeline:
+
+Write three separate, named scoring criterion functions (each isolated, each explainable on its own):
+Passenger volume (bigger = more expansion justification)
+Delay rate (higher = more congestion pressure, i.e. treat this as a positive signal for "needs expansion" this time — not a penalty like before; think about why the sign flips depending on what question you're answering)
+Long-haul flight percentage (higher = more international/long-haul demand, a positive signal)
+Write a combined scoreCandidate function that takes a weights object with all three criteria and returns a total score.
+Produce a ranked list (highest score first) of all four airports.
+For the top-ranked airport, write a short human-readable explanation string that names the specific factors driving its score (e.g. "Boston Logan ranks highest due to high passenger volume (12.5M) and strong long-haul demand (22%), despite elevated delays (18%).") — this should be generated from the actual data, not hardcoded text.
+Run it and show me the full output: the ranked list and the explanation string.
+
+Take your time — this is meant to feel like a compressed version of the real assignment.

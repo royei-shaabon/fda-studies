@@ -1,0 +1,43 @@
+Next: Async/await and Promises
+
+This is the last conceptual topic before Day 1's capstone exercise, and it's important — almost everything you'll do with LLM APIs later (Day 5+) involves waiting for a network response, so this needs to be solid.
+
+The problem this solves: some operations don't finish instantly — fetching data from an API, reading a file, querying a database. JavaScript doesn't pause and wait around for these by default; it keeps running other code while the slow thing happens in the background, and lets you know when it's done. A Promise is the object that represents "a value that isn't ready yet, but will be eventually (or will fail)."
+
+A Promise has three states: pending (still working), fulfilled (succeeded, has a value), or rejected (failed, has an error).
+
+Here's a function that returns a Promise (simulating an API call with a delay):
+
+typescript
+function fetchPrice(sku: string): Promise<number> {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (sku === "INVALID") {
+        reject(new Error("SKU not found"));
+      } else {
+        resolve(19.99);
+      }
+    }, 1000);
+  });
+}
+
+Notice the return type: Promise<number>. This is a generic (we'll cover generics properly later, but for now: Promise<number> reads as "a Promise that, when it resolves, gives you a number"). The type inside the <> is what you'll eventually get, not what you have right now.
+
+Consuming a Promise with async/await:
+
+typescript
+async function printPrice(sku: string) {
+  try {
+    const price = await fetchPrice(sku);
+    console.log(`Price: ${price}`);
+  } catch (error) {
+    console.log(`Failed to get price: ${error}`);
+  }
+}
+async in front of a function means "this function returns a Promise, and you're allowed to use await inside it."
+await pauses execution of this function until the Promise resolves, and gives you the actual value (number, in this case) — not the Promise wrapper. Without await, price would be a Promise<number> object, not a usable number.
+try/catch is how you handle a rejected Promise when using await — it converts a Promise rejection into a normal JavaScript error you can catch, same as any other error handling.
+Exercise
+Write a function fetchStock(sku: string): Promise<boolean> that simulates checking stock — use setTimeout like the example above, resolve with true for any SKU except "OUT_OF_STOCK", which should resolve with false (no need to reject/error here, just two possible resolved values).
+Write an async function called checkStock that calls fetchStock, awaits the result, and logs "In stock" or "Out of stock" depending on the result.
+Call checkStock with two different SKU values and confirm both print correctly.

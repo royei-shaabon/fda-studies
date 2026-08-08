@@ -1,0 +1,44 @@
+Array methods: map, filter, reduce, sort
+
+You've already used map and filter in the last two days, so this is partly reinforcement, plus sort, which you haven't used yet.
+
+Since you're comfortable with SQL/Excel, here's the fastest mental mapping:
+
+.map() → transform every row (like a computed column)
+.filter() → WHERE clause (keep rows matching a condition)
+.reduce() → aggregate into a single value (like SUM(), but general-purpose — you can build any aggregation with it)
+.sort() → ORDER BY
+
+.sort() has a gotcha worth knowing up front: it mutates the original array (unlike map/filter, which return new arrays), and by default it sorts as if everything were strings — meaning [10, 2, 1].sort() gives you [1, 10, 2], not [1, 2, 10]. For numbers, you must pass a comparator function:
+
+typescript
+const numbers = [10, 2, 1];
+numbers.sort((a, b) => a - b); // ascending: [1, 2, 10]
+numbers.sort((a, b) => b - a); // descending: [10, 2, 1]
+
+The comparator returns: negative if a should come before b, positive if a should come after b, zero if equal. a - b gives ascending because when a < b, the result is negative.
+
+Exercise
+
+Given this data:
+
+typescript
+interface Airport {
+  code: string;
+  name: string;
+  passengers: number;
+  delayRatePercent: number;
+}
+
+const airports: Airport[] = [
+  { code: "BOS", name: "Boston Logan", passengers: 12_500_000, delayRatePercent: 18 },
+  { code: "PVD", name: "Providence", passengers: 2_100_000, delayRatePercent: 9 },
+  { code: "BDL", name: "Bradley", passengers: 3_400_000, delayRatePercent: 12 },
+  { code: "MHT", name: "Manchester-Boston", passengers: 1_800_000, delayRatePercent: 7 },
+];
+Use .map() to produce an array of just the airport names (strings only).
+Use .filter() to get only airports with delayRatePercent greater than 10.
+Use .sort() to sort airports by passengers descending (busiest first).
+Use .reduce() to calculate the total passengers across all airports.
+
+Write all four, run them, and show me the actual output for each.
