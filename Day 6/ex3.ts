@@ -1,4 +1,4 @@
-const lookupProductTool = {
+const lookupProductTool3 = {
   name: "lookup_product",
   description: "Look up and return product details by product ID from the available product dataset. Use this tool whenever product information is needed instead of guessing product details.",
   input_schema: {

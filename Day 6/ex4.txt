@@ -1,0 +1,15 @@
+#4: the tool-call loop — the actual request → execute → respond mechanic.
+
+Here's the shape, conceptually, before code: when you send a message with tools attached, the model's response can come back with stop_reason: "tool_use" instead of a normal text answer — meaning the model isn't done, it's telling you it needs a tool executed before it can continue. The response's content array will contain a tool_use block with the tool's name and the input (arguments) it generated. Your code then:
+
+Finds that tool_use block
+Runs the actual matching TypeScript function with those arguments
+Sends a new message back to the model — with role: "user", containing a tool_result block referencing the tool call, carrying your function's real output
+The model then produces its actual final text response, now informed by real data
+
+This is just multi-turn history again (Day 5), with two new block types (tool_use, tool_result) instead of plain text.
+
+Question before you implement anything: given what you already know about addTurn's strict role-alternation rule from Day 5 — where does the tool_result message fit into that alternation? Is it a "user" turn or an "assistant" turn, and why does that make sense given who's "speaking" at that point in the exchange?
+
+ANSWER:
+tool_result messages are role: "user"
