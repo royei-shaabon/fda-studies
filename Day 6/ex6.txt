@@ -16,3 +16,25 @@ Handle the "not found" case in the lookup tool properly, per what you reasoned t
 The loop should support the model potentially not calling a tool at all (a plain conversational message) — don't assume stop_reason is always "tool_use"
 
 Take your time on this one — it's the integration of everything from today. Send it when it's ready, and tell me what test input(s) you ran it against.
+
+
+
+הסבר סופי על מה שנעשה בקוד:
+User asks something
+        ↓
+Claude receives message + tool schemas
+        ↓
+Claude asks to use a tool
+        ↓
+Your TypeScript validates the input
+        ↓
+Your TypeScript runs the real function
+        ↓
+tool_result is sent back to Claude
+        ↓
+Claude can request another tool
+        ↓
+or return the final answer
+
+lookupProductTool     = הסבר למודל איך לבקש את הכלי
+lookupProduct()       = הקוד שבאמת מריץ את הכלי
