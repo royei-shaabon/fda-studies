@@ -1,0 +1,43 @@
+2: building a real interactive CLI chat loop.
+
+Right now, runWithTools processes one hardcoded message. A real agent needs to accept input from the user in a terminal, respond, and then wait for the next input — a continuous back-and-forth loop, not a single call.
+
+New concept: readline — this is a built-in Node.js module (no install needed) that lets you read user input from the terminal line by line.
+
+Here's how it works at its simplest:
+
+typescript
+import * as readline from "readline";
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+});
+
+// rl.question() prints a prompt and waits for the user to type + press Enter
+rl.question("You: ", (answer) => {
+  console.log(`You said: ${answer}`);
+  rl.close(); // closes the interface when you're done
+});
+
+rl.question(prompt, callback) is callback-based, which is awkward to use inside an async function. A common pattern is to wrap it in a Promise so you can await it:
+
+typescript
+function ask(rl: readline.Interface, prompt: string): Promise<string> {
+  return new Promise((resolve) => {
+    rl.question(prompt, (answer) => {
+      resolve(answer);
+    });
+  });
+}
+
+// Now you can: const input = await ask(rl, "You: ");
+
+Exercise: Write a function chatLoop() that:
+
+Creates a readline interface
+In a while (true) loop: prompts the user for input with ask(), passes it to your existing runWithTools(), prints the response, and loops back
+If the user types "exit" or "quit", break out of the loop and close the readline interface
+Wrap the runWithTools call in a try/catch so a single failed exchange doesn't crash the whole chat session — print the error and continue
+
+Don't rebuild runWithTools — just call it as-is. This exercise is about the outer loop, not the inner tool mechanics. Go ahead.
