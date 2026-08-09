@@ -1,0 +1,18 @@
+#6, the capstone.
+
+Capstone: minimal agent, two tools, end-to-end.
+
+Build on runWithTools, extended to two tools instead of one:
+
+lookup_product (you already have the schema) — returns product details from a small hardcoded dataset (a real one this time, not a stub — 3–4 products is enough)
+A second tool of your choice — a calculator-style tool makes sense (e.g. calculate_discount, similar to the schema I showed you earlier) — real math inside, no LLM involved in the computation
+
+Requirements for the loop itself:
+
+The model must be able to call either tool, and your code must correctly detect which tool was requested and dispatch to the right function — not assume it's always the same one
+Real dataset lookup (a Record<string, {...}> or small array .find()) instead of a stub
+Real discount math inside the second tool
+Handle the "not found" case in the lookup tool properly, per what you reasoned through earlier
+The loop should support the model potentially not calling a tool at all (a plain conversational message) — don't assume stop_reason is always "tool_use"
+
+Take your time on this one — it's the integration of everything from today. Send it when it's ready, and tell me what test input(s) you ran it against.
