@@ -1,0 +1,10 @@
+Day 7: Error Handling, Retries, and a Real Interactive Loop
+
+Today closes the remaining gaps before you're doing full agent architecture: what happens when a tool call fails mid-loop (not just bad arguments — actual runtime errors), how to build an interactive CLI so the agent isn't just a single hardcoded call, and a first pass at sketching your take-home's architecture.
+
+Day 7 syllabus:
+
+1	Retry/error handling inside the tool loop — malformed args, tool exceptions, model retry
+2	Building a real interactive CLI chat loop (readline)
+3	Combining multi-turn conversation with tool use in one continuous loop
+4	Sketching your take-home's architecture on paper

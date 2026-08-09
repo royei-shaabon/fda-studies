@@ -1,0 +1,29 @@
+1. Retry/error handling in the tool loop
+
+Your capstone already throws when a tool gets bad input (Invalid input or unsupported tool) — but throwing kills the whole function. In a real interactive agent, one bad tool call shouldn't crash the entire conversation; it should ideally let the model know something went wrong, so it can retry or explain to the user.
+
+New concept: instead of throwing on a tool error, you send an error back to the model as if it were a tool result. The model reads it as data and can react — retry with different arguments, apologize, ask the user for clarification.
+
+Concrete example: say calculate_discount receives discountPercent: 150 (out of range). Instead of throwing, your tool result becomes:
+
+typescript
+const toolResult = {
+  error: true,
+  message: "discountPercent must be between 0 and 100, received 150"
+};
+
+That gets JSON-stringified and sent back as a normal tool_result, same mechanism as any successful result — the model sees it, understands something went wrong, and can decide what to do next (often it'll just tell the user, or occasionally retry with corrected values if the mistake was its own).
+
+One more new thing you haven't used yet: is_error on the tool_result block itself. Anthropic's API supports marking a tool result as an error explicitly, which helps the model recognize failure vs. success even before reading the content:
+
+typescript
+{
+  type: "tool_result",
+  tool_use_id: toolUseBlock.id,
+  content: JSON.stringify({ message: "discountPercent must be between 0 and 100" }),
+  is_error: true
+}
+
+This is optional — you could rely purely on the content shape — but it's a cleaner signal, and cheap to add.
+
+Exercise: Modify your capstone's tool-dispatch logic so that instead of throw new Error(...) when input validation fails, it builds a proper error tool result (using is_error: true) and continues the loop instead of crashing. Test it by deliberately sending a message that would cause the model to try calculate_discount with an out-of-range value, or simulate it by temporarily forcing invalid input — whichever is easier for you to trigger. Show me the modified dispatch code.
