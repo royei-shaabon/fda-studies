@@ -1,0 +1,7 @@
+#3: combining multi-turn conversation with tool use in one continuous loop.
+
+Right now there's a gap between chatLoop and runWithTools: each call to runWithTools starts with a fresh, empty message history. The model has no memory of what was said in previous turns — if the user says "What's product B456?" and then follows up with "What's its discount?", the model has no idea what "its" refers to, because the second call only contains that one message.
+
+You already built the solution to this on Day 5 — a growing messages array that carries the full conversation history, with each new user turn and assistant response appended.
+
+Question before you implement: right now, runWithTools manages its own internal messages array. If you want chatLoop to maintain persistent history across turns, what needs to change — should chatLoop own the history and pass it to runWithTools, or should runWithTools keep its own internal array and somehow persist it between calls? Think about which design keeps responsibilities clean, and what the function signature change would look like.
