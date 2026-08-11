@@ -1,0 +1,19 @@
+Days 9–10 — Build It. Verbatim from your document:
+
+Goal: implement a working version end-to-end — data fetching, deterministic scoring, and a chat interface with tool calling wired together.
+
+What you'll learn:
+
+Data fetching layer with basic caching/error handling
+A deterministic scoring/ranking function, testable and kept separate from any LLM call
+An agent that exposes the scoring logic as a tool and can answer comparison/ranking questions conversationally, with follow-ups
+Writing the short architecture doc alongside the code, not after: scoring methodology, key tradeoffs, where AI is used vs where it isn't
+
+Hands-on exercise: Get a real, runnable version working for at least 2 of the 4 example questions in the brief (e.g. New England terminal expansion candidates, and LA vs Santa Ana congestion). Polish is optional; working and explainable is not.
+
+What this means practically, given what you built today: your Day 8 one-pager is the spec. Days 9–10 is where you actually implement:
+
+A fetcher that pulls BTS T-100 + On-Time Performance data (and optionally FAA TAF)
+The weighted MCDA scoring function as plain, testable TypeScript — no LLM involved in the math itself, per your own Day 6/7 principle (deterministic logic in code, LLM handles intent/explanation)
+A tool the agent can call to run that scoring function and return ranked results
+Enough of a chat loop (you already built this in Day 7) to handle at least 2 of the 4 example questions end-to-end
