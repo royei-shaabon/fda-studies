@@ -1,13 +1,13 @@
 import { readFile } from "node:fs/promises"; // File-system utility
 import { join } from "node:path"; // Path utility
 import { parse } from "csv-parse/sync"; // CSV parser
-import { DataQuery, isWithinDateRange } from "./types";
+import { type DataQuery, isWithinDateRange } from "./types";
 
 const DATA_DIR = join(process.cwd(), "data");
-const ONTIME_FILE = join(DATA_DIR, "ontime.csv");
+const DELAY_CAUSES_FILE = join(DATA_DIR, "delay-causes.csv");
 
-// Raw On-Time CSV row - all values arrive as strings
-interface RawOnTimeRow {
+// Raw Delay Cause CSV row - all values arrive as strings
+interface RawDelayCauseRow {
     year: string;
     month: string;
     carrier: string;
@@ -32,7 +32,7 @@ interface RawOnTimeRow {
 }
 
 // Clean typed On-Time record used inside the app
-export interface OnTimeRecord {
+export interface DelayCauseRecord {
     year: number;
     month: number;
     carrier: string;
@@ -56,8 +56,8 @@ export interface OnTimeRecord {
     lateAircraftDelayMinutes: number | null;
 }
 
-// Validates that unknown data matches RawOnTimeRow
-function isRawOnTimeRow(data: unknown): data is RawOnTimeRow {
+// Validates that unknown data matches RawDelayCauseRow
+function isRawDelayCauseRow(data: unknown): data is RawDelayCauseRow {
     if (typeof data !== "object" || data === null) return false;
 
     const row = data as Record<string, unknown>;
@@ -96,14 +96,14 @@ function parseOptionalNumber(value: string): number | null {
     const parsed = Number(value);
 
     if (!Number.isFinite(parsed)) {
-        throw new Error("Invalid numeric value in On-Time row");
+        throw new Error("Invalid numeric value in Delay Cause row");
     }
 
     return parsed;
 }
 
-// Converts and validates a raw row into OnTimeRecord
-function normalizeOnTimeRow(row: RawOnTimeRow): OnTimeRecord {
+// Converts and validates a raw row into DelayCauseRecord
+function normalizeDelayCauseRow(row: RawDelayCauseRow): DelayCauseRecord {
     const year = Number(row.year);
     const month = Number(row.month);
 
@@ -114,7 +114,7 @@ function normalizeOnTimeRow(row: RawOnTimeRow): OnTimeRecord {
         month < 1 ||
         month > 12
     ) {
-        throw new Error("Invalid year or month in On-Time row");
+        throw new Error("Invalid year or month in Delay Cause row");
     }
 
     return {
@@ -147,26 +147,26 @@ function normalizeOnTimeRow(row: RawOnTimeRow): OnTimeRecord {
 }
 
 // Parses CSV text and validates all raw rows
-function parseOnTimeCsv(content: string): RawOnTimeRow[] {
+function parseDelayCauseCsv(content: string): RawDelayCauseRow[] {
     const data: unknown[] = parse(content, {
         columns: true,
         skip_empty_lines: true,
     });
 
-    if (!data.every(isRawOnTimeRow)) {
-        throw new Error("Invalid On-Time data");
+    if (!data.every(isRawDelayCauseRow)) {
+        throw new Error("Invalid Delay Cause data");
     }
 
     return data;
 }
 
-// Loads and filters clean On-Time records
-export async function loadOnTimeData(
+// Loads and filters Delay Cause records
+export async function loadDelayCausesData(
     query: DataQuery
-): Promise<OnTimeRecord[]> {
-    const content = await readFile(ONTIME_FILE, "utf-8");
-    const parsedContent = parseOnTimeCsv(content);
-    const normalizedContent = parsedContent.map(normalizeOnTimeRow);
+): Promise<DelayCauseRecord[]> {
+    const content = await readFile(DELAY_CAUSES_FILE, "utf-8");
+    const parsedContent = parseDelayCauseCsv(content);
+    const normalizedContent = parsedContent.map(normalizeDelayCauseRow);
 
     return normalizedContent.filter(record =>
         query.airports.includes(record.airport) &&
