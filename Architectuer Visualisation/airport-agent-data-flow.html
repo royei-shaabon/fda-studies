@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Data Flow Console — Airport Investment Intelligence Agent</title>
+<style>
+  :root{
+    --bg:#0A1412;
+    --bg-panel:#101C19;
+    --bg-elevated:#152722;
+    --grid-line:#1C2F29;
+    --text-primary:#E9F2ED;
+    --text-muted:#8AA39A;
+    --text-dim:#526158;
+    --accent-runtime:#5EEAD1;
+    --accent-precompute:#F0B860;
+    --accent-decision:#8FB8FF;
+    --accent-validate:#E2825E;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Code", "Roboto Mono", Consolas, monospace;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, sans-serif;
+  }
+  *{ box-sizing:border-box; }
+  html,body{
+    margin:0; padding:0;
+    background:
+      radial-gradient(circle at 15% 8%, rgba(94,234,209,0.05), transparent 45%),
+      radial-gradient(circle at 85% 92%, rgba(240,184,96,0.04), transparent 45%),
+      var(--bg);
+    color:var(--text-primary);
+    font-family:var(--font-sans);
+    min-height:100vh;
+  }
+  body{
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:34px 34px;
+    background-attachment:fixed;
+  }
+  .wrap{ max-width:960px; margin:0 auto; padding:20px 20px 60px; }
+
+  /* ---------- topbar ---------- */
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:14px 4px 22px; flex-wrap:wrap; gap:10px;
+    border-bottom:1px solid var(--grid-line); margin-bottom:26px;
+  }
+  .brand{
+    font-family:var(--font-mono); font-size:13px; letter-spacing:0.14em;
+    text-transform:uppercase; color:var(--text-muted); display:flex; align-items:center; gap:8px;
+  }
+  .brand .dot{ width:7px; height:7px; border-radius:50%; background:var(--accent-runtime); box-shadow:0 0 8px var(--accent-runtime); }
+  .crumbs{ font-family:var(--font-mono); font-size:12px; color:var(--text-dim); }
+  .crumbs span{ color:var(--text-muted); }
+  .crumbs button{
+    background:none; border:none; color:var(--text-muted); font-family:var(--font-mono);
+    font-size:12px; cursor:pointer; padding:2px 4px; text-decoration:underline;
+    text-underline-offset:3px; text-decoration-color:var(--grid-line);
+  }
+  .crumbs button:hover{ color:var(--accent-runtime); }
+
+  h1{ font-family:var(--font-mono); font-size:clamp(22px,4vw,30px); letter-spacing:-0.01em; margin:0 0 6px; }
+  .sub{ color:var(--text-muted); font-size:15px; line-height:1.6; max-width:640px; margin:0 0 30px; }
+
+  /* ---------- legend ---------- */
+  .legend{ display:flex; gap:18px; flex-wrap:wrap; margin:0 0 30px; font-family:var(--font-mono); font-size:11.5px; color:var(--text-muted); }
+  .legend .item{ display:flex; align-items:center; gap:6px; }
+  .legend .sw{ width:9px; height:9px; border-radius:2px; }
+
+  /* ---------- home cards ---------- */
+  .cards{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  @media (max-width:680px){ .cards{ grid-template-columns:1fr; } }
+  .card{
+    background:var(--bg-panel); border:1px solid var(--grid-line); border-radius:10px;
+    padding:22px; cursor:pointer; transition:border-color .15s, transform .15s;
+    text-align:left; position:relative; overflow:hidden;
+  }
+  .card:hover{ transform:translateY(-2px); }
+  .card::before{
+    content:""; position:absolute; top:0; left:0; right:0; height:2px;
+  }
+  .card.precompute::before{ background:var(--accent-precompute); }
+  .card.runtime::before{ background:var(--accent-runtime); }
+  .card.precompute:hover{ border-color:var(--accent-precompute); }
+  .card.runtime:hover{ border-color:var(--accent-runtime); }
+  .card .eyebrow{ font-family:var(--font-mono); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; margin-bottom:10px; }
+  .card.precompute .eyebrow{ color:var(--accent-precompute); }
+  .card.runtime .eyebrow{ color:var(--accent-runtime); }
+  .card h2{ font-size:19px; margin:0 0 10px; font-family:var(--font-mono); }
+  .card p{ color:var(--text-muted); font-size:14px; line-height:1.6; margin:0 0 18px; }
+  .card .go{ font-family:var(--font-mono); font-size:13px; color:var(--text-primary); }
+  .card.precompute .go{ color:var(--accent-precompute); }
+  .card.runtime .go{ color:var(--accent-runtime); }
+
+  /* ---------- picker ---------- */
+  .qcards{ display:flex; flex-direction:column; gap:12px; }
+  .qcard{
+    background:var(--bg-panel); border:1px solid var(--grid-line); border-radius:10px;
+    padding:18px 20px; cursor:pointer; display:flex; justify-content:space-between; align-items:center; gap:16px;
+    transition:border-color .15s, transform .15s;
+  }
+  .qcard:hover{ border-color:var(--accent-runtime); transform:translateY(-1px); }
+  .qcard .q{ font-size:15px; line-height:1.5; }
+  .qcard .tool{ font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin-top:6px; }
+  .qcard .arrow{ font-family:var(--font-mono); color:var(--accent-runtime); font-size:18px; flex:0 0 auto; }
+
+  /* ---------- rail ---------- */
+  .rail{ display:flex; align-items:center; flex-wrap:wrap; gap:0; margin-bottom:28px; }
+  .chip{
+    font-family:var(--font-mono); font-size:11px; border:1px solid var(--grid-line);
+    background:var(--bg-panel); border-radius:8px; padding:8px 10px; min-width:96px;
+    cursor:pointer; transition:all .2s; opacity:0.45;
+  }
+  .chip .f{ color:var(--text-dim); display:block; font-size:10px; margin-bottom:2px; }
+  .chip .fn{ color:var(--text-muted); display:block; font-weight:600; }
+  .chip.done{ opacity:0.75; }
+  .chip.done .fn{ color:var(--text-primary); }
+  .chip.current{ opacity:1; transform:scale(1.04); box-shadow:0 0 0 1px var(--kind-color,var(--accent-runtime)), 0 0 16px -2px var(--kind-color,var(--accent-runtime)); border-color:var(--kind-color,var(--accent-runtime)); }
+  .chip.current .fn{ color:var(--text-primary); }
+  .chip.current .f{ color:var(--kind-color,var(--accent-runtime)); }
+  .connector{ width:26px; height:2px; position:relative; flex:0 0 auto; margin:0 3px; background:var(--grid-line); }
+  .connector.crossed{ background:var(--grid-line); }
+  .connector .blip{
+    position:absolute; top:50%; left:0; width:6px; height:6px; margin-top:-3px; border-radius:50%;
+    background:var(--kind-color,var(--accent-runtime)); box-shadow:0 0 8px var(--kind-color,var(--accent-runtime));
+    opacity:0; transform:translateX(0);
+  }
+  .connector.animate .blip{ animation: travel 0.55s ease forwards; }
+  @keyframes travel{
+    0%{ opacity:1; transform:translateX(0); }
+    100%{ opacity:0; transform:translateX(22px); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .connector.animate .blip{ animation:none; opacity:0; }
+    .card, .qcard, .chip{ transition:none; }
+  }
+
+  /* ---------- stage ---------- */
+  .stage{ background:var(--bg-panel); border:1px solid var(--grid-line); border-radius:12px; padding:26px; }
+  .stage-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:8px; }
+  .step-count{ font-family:var(--font-mono); font-size:12px; color:var(--text-dim); letter-spacing:0.06em; }
+  .kind-badge{
+    font-family:var(--font-mono); font-size:11px; padding:3px 9px; border-radius:20px;
+    display:inline-flex; align-items:center; gap:6px; border:1px solid var(--grid-line);
+    color:var(--text-muted);
+  }
+  .kind-badge .sw{ width:7px; height:7px; border-radius:50%; }
+
+  .loc{ font-family:var(--font-mono); font-size:13px; color:var(--text-dim); margin-bottom:4px; }
+  .loc b{ color:var(--text-muted); font-weight:600; }
+  .stage h3{ font-size:20px; margin:2px 0 10px; }
+  .summary{ color:var(--text-primary); font-size:14.5px; line-height:1.65; margin:0 0 18px; max-width:640px; }
+
+  .payload{
+    background:var(--bg-elevated); border:1px solid var(--grid-line); border-radius:8px;
+    overflow:hidden; margin-bottom:18px;
+  }
+  .payload .hdr{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--text-dim); padding:8px 14px; border-bottom:1px solid var(--grid-line);
+  }
+  .payload pre{
+    margin:0; padding:14px; font-family:var(--font-mono); font-size:12.5px; line-height:1.6;
+    color:var(--accent-runtime); white-space:pre-wrap; word-break:break-word;
+  }
+
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:6px; }
+  button.btn{
+    font-family:var(--font-mono); font-size:13px; padding:9px 16px; border-radius:7px; cursor:pointer;
+    border:1px solid var(--grid-line); background:transparent; color:var(--text-primary);
+    transition:border-color .15s, background .15s;
+  }
+  button.btn:hover{ border-color:var(--text-muted); }
+  button.btn:focus-visible{ outline:2px solid var(--accent-runtime); outline-offset:2px; }
+  button.btn.primary{ background:var(--kind-color,var(--accent-runtime)); color:#04140F; border-color:transparent; font-weight:600; }
+  button.btn.primary:hover{ filter:brightness(1.08); }
+  button.btn.ghost{ color:var(--text-muted); }
+  button.btn:disabled{ opacity:0.35; cursor:not-allowed; }
+
+  .explain{
+    margin-top:16px; padding-top:16px; border-top:1px dashed var(--grid-line);
+    display:none;
+  }
+  .explain.open{ display:block; }
+  .explain p{ font-size:14px; line-height:1.7; color:var(--text-muted); margin:0 0 12px; max-width:620px; }
+  .quote{
+    font-family:var(--font-mono); font-size:12.5px; color:var(--text-dim); border-left:2px solid var(--kind-color,var(--accent-runtime));
+    padding:8px 12px; background:rgba(255,255,255,0.02); border-radius:0 6px 6px 0; line-height:1.6;
+  }
+
+  .done-panel{ text-align:center; padding:36px 20px; }
+  .done-panel .check{ font-size:34px; margin-bottom:10px; }
+  .done-panel h3{ font-family:var(--font-mono); margin:0 0 8px; }
+  .done-panel p{ color:var(--text-muted); font-size:14px; max-width:480px; margin:0 auto 22px; line-height:1.6; }
+  .done-actions{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+  .illustrative-note{
+    font-family:var(--font-mono); font-size:11px; color:var(--text-dim); margin:-14px 0 22px;
+  }
+</style>
+</head>
+<body>
+<div class="wrap" id="app"></div>
+
+<script>
+/* ---------------------------------------------------------
+   DATA: three scenarios, each an ordered list of steps.
+   kind: "runtime" | "precompute" | "decision" | "validate"
+--------------------------------------------------------- */
+
+const KIND_COLOR = {
+  runtime:   "var(--accent-runtime)",
+  precompute:"var(--accent-precompute)",
+  decision:  "var(--accent-decision)",
+  validate:  "var(--accent-validate)"
+};
+const KIND_LABEL = {
+  runtime:    "deterministic · TS",
+  precompute: "deterministic · TS (offline)",
+  decision:   "Claude · non-deterministic",
+  validate:   "unknown → typed"
+};
+
+const metricFlow = {
+  title: "What's the delay rate at LAX and SFO?",
+  tool: "→ routes to get_airport_metric",
+  accent: "runtime",
+  steps: [
+    { file:"index.ts", fn:"main()", kind:"runtime",
+      title:"Your question is captured",
+      summary:"What you type is turned into a message and saved as the start of the conversation.",
+      payload:`userInput: "What's the delay rate at LAX and SFO?"`,
+      explain:"Nothing clever happens yet — this step just records what you typed so it can be sent to Claude next.",
+      quote:`// Add the user's message to conversation history` },
+
+    { file:"index.ts", fn:"runWithTools()", kind:"runtime",
+      title:"The whole conversation is sent to Claude",
+      summary:"This function keeps talking to Claude until it gets a plain-text answer, not another tool request.",
+      payload:`messages: [ { role: "user", content: "What's the delay rate at LAX and SFO?" } ]\ntools: [get_airport_metric, rank_airports]`,
+      explain:"Every call includes the full history, because the API itself has no memory between requests — your code is the memory.",
+      quote:`// Runs the model until it produces a normal text response` },
+
+    { file:"Claude", fn:"messages.create()", kind:"decision",
+      title:"Claude decides which tool to use",
+      summary:"The system prompt has an explicit rule for delay questions, so the routing is predictable.",
+      payload:`system rule matched:\n"delays... always use get_airport_metric\nwith metric='delay_rate'"`,
+      explain:"This isn't Claude guessing — it's following a rule you wrote. The model still makes the call, but inside a narrow lane.",
+      quote:`If the user asks about congestion, congestion levels, delays, or delay rates, always use get_airport_metric with metric="delay_rate"` },
+
+    { file:"index.ts", fn:"toolUses filter", kind:"runtime",
+      title:"The tool request is detected",
+      summary:"Claude's response is scanned for any tool_use blocks.",
+      payload:`tool_use: {\n  name: "get_airport_metric",\n  input: { airports: ["LAX","SFO"], metric: "delay_rate" }\n}`,
+      explain:"Claude's answer can mix text and tool calls — this step just pulls the tool calls out so they can run.",
+      quote:`// Find all tool calls in this response` },
+
+    { file:"tools.ts", fn:"runTool()", kind:"runtime",
+      title:"Routed to the right handler",
+      summary:"A plain switch statement sends the call to the matching function, by name.",
+      payload:`runTool(cache, "get_airport_metric", input)`,
+      explain:"This is ordinary code, not AI — the tool name Claude sent is matched against a fixed list of known tools.",
+      quote:`// Show which tool the model selected` },
+
+    { file:"tools.ts", fn:"isGetAirportMetricInput()", kind:"validate",
+      title:"The input is checked before it's trusted",
+      summary:"Claude generated this input, so it's treated as unknown until its shape is confirmed.",
+      payload:`airports: string[]  ✓\nmetric: one of 5 allowed values  ✓`,
+      explain:"This is the 'unknown until validated' rule in action — model-generated data gets the same suspicion as a CSV row or an API response.",
+      quote:`// Validate external tool input` },
+
+    { file:"tools.ts", fn:"getAirportMetric()", kind:"runtime",
+      title:"The cached numbers are looked up",
+      summary:"No math happens here — it just reads pre-computed values out of the reference cache.",
+      payload:`LAX.delayCongestion → rawValue: 0.184, normalizedScore: 61.4\nSFO.delayCongestion → rawValue: 0.221, normalizedScore: 74.2`,
+      explain:"This is the deterministic layer doing its job. The numbers already exist, computed offline — this step just finds and returns them.",
+      quote:`// Build one result per airport` },
+
+    { file:"index.ts", fn:"toolResults", kind:"runtime",
+      title:"The result is sent back to Claude",
+      summary:"The tool's output is wrapped up and pushed into the conversation as a new turn.",
+      payload:`{ role: "user", content: [ tool_result: {...} ] }`,
+      explain:"The Messages API treats tool output as a special kind of user turn — that's how results get back in front of Claude.",
+      quote:`// Tool results are returned to the model as a user turn` },
+
+    { file:"Claude", fn:"messages.create()", kind:"decision",
+      title:"Claude writes the final answer",
+      summary:"With the real numbers in hand, Claude turns them into plain English — under a strict rule.",
+      payload:`rule enforced:\n"Do not calculate percentages or other\nderived values from tool results."`,
+      explain:"Claude explains the numbers it was handed, but isn't allowed to invent new calculations — only report what the tool actually returned.",
+      quote:`Do not calculate percentages or other derived values from tool results. If a derived value is not explicitly returned by a tool, do not report it.` },
+
+    { file:"index.ts", fn:"runWithTools()", kind:"runtime",
+      title:"No more tools needed — answer returned",
+      summary:"Since Claude didn't ask for another tool, the loop ends and the text answer is handed back.",
+      payload:`textBlocks → "LAX has a departure delay rate of about 18%,\nSFO about 22%..."`,
+      explain:"This is the exit condition for the loop that started back in step 2 — plain text means the turn is finished.",
+      quote:`// If no tool was requested, return the model's text answer` },
+
+    { file:"index.ts", fn:"main()", kind:"runtime",
+      title:"The answer reaches you",
+      summary:"The final text is printed to the terminal, and the loop waits for your next question.",
+      payload:`console.log("Agent: LAX has a departure delay rate of about 18%...")`,
+      explain:"This is the last stop — everything before this happened between the moment you hit enter and this line printing.",
+      quote:`` }
+  ]
+};
+
+const rankingFlow = {
+  title: "Which New England airports are the best expansion candidates?",
+  tool: "→ routes to rank_airports",
+  accent: "runtime",
+  steps: [
+    { file:"index.ts", fn:"main()", kind:"runtime",
+      title:"Your question is captured",
+      summary:"What you type is turned into a message and saved as the start of the conversation.",
+      payload:`userInput: "Which New England airports are the best expansion candidates?"`,
+      explain:"Same first step as any question — it just records what you typed.",
+      quote:`// Add the user's message to conversation history` },
+
+    { file:"index.ts", fn:"runWithTools()", kind:"runtime",
+      title:"The whole conversation is sent to Claude",
+      summary:"This function keeps talking to Claude until it gets a plain-text answer.",
+      payload:`messages: [ { role: "user", content: "Which New England airports..." } ]\ntools: [get_airport_metric, rank_airports]`,
+      explain:"Both tools are always offered to Claude — the system prompt decides which one actually gets picked.",
+      quote:`// Runs the model until it produces a normal text response` },
+
+    { file:"Claude", fn:"messages.create()", kind:"decision",
+      title:"Claude decides which tool to use",
+      summary:"This time the question is about candidacy and ranking, so a different rule applies.",
+      payload:`system rule matched:\n"Use rank_airports when the user asks about\nranking, investment candidacy, or terminal\nexpansion candidates."`,
+      explain:"Same mechanism as the delay question, different rule — the system prompt is what keeps this predictable.",
+      quote:`Use rank_airports when the user asks about overall Terminal Demand Pressure, ranking, investment candidacy, or terminal expansion candidates.` },
+
+    { file:"index.ts", fn:"toolUses filter", kind:"runtime",
+      title:"The tool request is detected",
+      summary:"Claude's response is scanned for any tool_use blocks.",
+      payload:`tool_use: {\n  name: "rank_airports",\n  input: { region: "New England" }\n}`,
+      explain:"Claude chose to pass a region name rather than a list of airport codes — both are valid inputs to this tool.",
+      quote:`// Find all tool calls in this response` },
+
+    { file:"tools.ts", fn:"runTool()", kind:"runtime",
+      title:"Routed to the right handler",
+      summary:"The same switch statement, now matching a different tool name.",
+      payload:`runTool(cache, "rank_airports", input)`,
+      explain:"One dispatcher, many tools — this is the same function you just saw for the metric question.",
+      quote:`// Show which tool the model selected` },
+
+    { file:"tools.ts", fn:"isRankAirportsInput()", kind:"validate",
+      title:"The input is checked before it's trusted",
+      summary:"This input must have exactly one of airports or region — never both, never neither.",
+      payload:`region: "New England"  ✓\nairports: undefined  ✓\n(exactly one source required)`,
+      explain:"This is a stricter check than a simple type check — it's enforcing a business rule about what a valid request looks like.",
+      quote:`// Require exactly one input source` },
+
+    { file:"tools.ts", fn:"rankAirports()", kind:"runtime",
+      title:"Airports resolved, scored, and ranked",
+      summary:"The region name maps to a fixed airport list, contributions are pulled from the cache, and results are sorted.",
+      payload:`region "new_england" → [BOS, PVD, BDL, MHT]\nsorted by finalScore, top 5 kept`,
+      explain:"Nothing here is asked of Claude — the region-to-airport mapping and the sort are both plain, fixed logic.",
+      quote:`// Rank from highest to lowest score` },
+
+    { file:"index.ts", fn:"toolResults", kind:"runtime",
+      title:"The result is sent back to Claude",
+      summary:"The ranked list is wrapped up and pushed into the conversation as a new turn.",
+      payload:`{ role: "user", content: [ tool_result: {...} ] }`,
+      explain:"Same mechanism as before — tool output goes back in as a user turn so Claude can read it.",
+      quote:`// Tool results are returned to the model as a user turn` },
+
+    { file:"Claude", fn:"messages.create()", kind:"decision",
+      title:"Claude explains the ranking",
+      summary:"Claude has to use the weighted contributions the tool returned — not just eyeball the normalized scores.",
+      payload:`rule enforced:\n"use the weightedContributions values\nreturned by rank_airports. Do not rank\ncontributions by normalized score alone."`,
+      explain:"This stops a subtle mistake: normalized score and weighted contribution can disagree once weights are uneven, so Claude is told which one is authoritative.",
+      quote:`When the user asks which metric contributes most to a final score, use the weightedContributions values returned by rank_airports. Do not rank contributions by normalized score alone.` },
+
+    { file:"index.ts", fn:"runWithTools()", kind:"runtime",
+      title:"No more tools needed — answer returned",
+      summary:"Since Claude didn't ask for another tool, the loop ends and the text answer is handed back.",
+      payload:`textBlocks → "BOS ranks highest among the four New England\nairports covered, driven mainly by growth and scale..."`,
+      explain:"Same exit condition as any question — plain text means this turn is done.",
+      quote:`// If no tool was requested, return the model's text answer` },
+
+    { file:"index.ts", fn:"main()", kind:"runtime",
+      title:"The answer reaches you",
+      summary:"The final text is printed to the terminal, and the loop waits for your next question.",
+      payload:`console.log("Agent: BOS ranks highest among the four...")`,
+      explain:"This is the last stop for this question — the whole trip from typed text to printed answer.",
+      quote:`` }
+  ]
+};
+
+const precomputeFlow = {
+  title: "Scheduled run — npx tsx precompute.ts",
+  tool: "runs offline, before the agent ever starts",
+  accent: "precompute",
+  steps: [
+    { file:"precompute.ts", fn:"main()", kind:"precompute",
+      title:"The one-time build starts",
+      summary:"This runs by itself, offline — no user, no Claude, no chat loop involved.",
+      payload:`$ npx tsx precompute.ts`,
+      explain:"This script exists purely to prepare data ahead of time, so the live agent never has to touch a raw file.",
+      quote:`// Run the one-time precompute process` },
+
+    { file:"precompute.ts", fn:"referenceAirports + DataQuery windows", kind:"precompute",
+      title:"The reference population and time windows are fixed",
+      summary:"33 major U.S. airports are hard-coded as the comparison set, plus separate date ranges for each metric.",
+      payload:`referenceAirports: [ATL, LAX, ORD, DFW, DEN, ... 33 total]\nhistoricalQuery: 2022-01 → 2025-12\ncurrentT100Query: 2025-05 → 2026-04\nonTimeQuery: 2025-07 → 2026-06`,
+      explain:"Fixing this list matters — every airport is scored against the same 33 peers, so scores stay comparable across queries.",
+      quote:`// Fixed reference population used for percentile normalization` },
+
+    { file:"t100.ts / ontime.ts", fn:"loadT100Data() / loadOnTimeData()", kind:"validate",
+      title:"Raw CSV rows are loaded and checked",
+      summary:"Every row from the BTS files is validated against a strict shape before it's trusted as real data.",
+      payload:`isRawT100Row(row) ✓ → normalizeT100Row(row)\nisRawOnTimeRow(row) ✓ → normalizeOnTimeRow(row)`,
+      explain:"CSV files are just text — this is the 'unknown until validated' boundary again, this time for data coming off disk instead of from Claude.",
+      quote:`// Validates that unknown data matches RawT100Row` },
+
+    { file:"scoring.ts", fn:"calculateHistoricalGrowth() + 3 more", kind:"precompute",
+      title:"Four raw metrics are computed per airport",
+      summary:"Plain arithmetic over the cleaned records — average YoY growth, latest 12-month passengers, delay rate, long-haul share.",
+      payload:`BOS → growth: 0.041, scale: 18.2M, delay: 0.171, longHaul: 0.283`,
+      explain:"These four numbers are the entire factual foundation of the system — everything downstream is built from them.",
+      quote:`// Calculates average annual YoY passenger growth` },
+
+    { file:"scoring.ts", fn:"percentileRank()", kind:"precompute",
+      title:"Each metric is normalized to 0–100",
+      summary:"Every airport's raw value becomes a percentile rank against the other 32, with ties averaged.",
+      payload:`BOS growth 0.041 → percentile 58.3\n(ranked against all 33 reference airports)`,
+      explain:"Raw numbers aren't comparable across metrics — passengers are in the millions, growth is a small fraction. Percentiles put everything on the same scale.",
+      quote:`// Converts raw values into percentile scores from 0 to 100` },
+
+    { file:"scoring.ts", fn:"calculateFinalScore()", kind:"precompute",
+      title:"The four scores are combined into one",
+      summary:"Each normalized score is multiplied by a fixed weight and summed into one Terminal Demand Pressure score.",
+      payload:`weights: growth .4125, scale .3375, delay .1625, longHaul .0875\nfinalScore = Σ(normalized × weight)`,
+      explain:"The weights are fixed constants, not something Claude ever touches — that's what keeps the score explainable and repeatable.",
+      quote:`// Combines normalized metrics into one final score` },
+
+    { file:"scoring.ts", fn:"calculateLatestMonthlyYoY()", kind:"precompute",
+      title:"Monthly YoY is computed separately",
+      summary:"This number is calculated too, but it's deliberately kept out of the weighted score.",
+      payload:`BOS monthlyYoY: 0.037   (context only, not scored)`,
+      explain:"This matches a rule Claude is given at runtime — monthly YoY is supporting context only, and this is exactly where that boundary is enforced in code.",
+      quote:`// Calculate latest monthly YoY as supporting context only` },
+
+    { file:"precompute.ts", fn:"cache assembly", kind:"precompute",
+      title:"Everything is assembled into one object",
+      summary:"Every airport's final score and monthly YoY are combined into a single lookup table, with a timestamp.",
+      payload:`cache = { computedAt: "2026-08-13T...", airports: { BOS:{...}, LAX:{...}, ... } }`,
+      explain:"This object is the entire bridge between the offline math and the live agent — nothing else gets passed forward.",
+      quote:`// Build the complete cache object` },
+
+    { file:"precompute.ts", fn:"writeFile()", kind:"precompute",
+      title:"The cache is written to disk",
+      summary:"The whole object is saved as reference-cache.json — a plain file, not a database.",
+      payload:`data/reference-cache.json written  (33 airports)`,
+      explain:"From here on, this file is the single source of truth the live agent reads — the raw CSVs aren't needed again.",
+      quote:`// Convert the cache to JSON and write it to disk` },
+
+    { file:"referenceCache.ts", fn:"loadReferenceCache()", kind:"validate",
+      title:"The bridge into the live agent",
+      summary:"When the agent starts up, it reads this exact file back and validates its shape before trusting it.",
+      payload:`isReferenceCache(parsed) ✓\ncache.computedAt: "2026-08-13T..."`,
+      explain:"Even your own precomputed file gets validated before use — the 'unknown until typed' rule makes no exception for trusted-looking sources. This is where the Agent Runtime flow picks up.",
+      quote:`// Reject invalid or outdated cache structures` }
+  ]
+};
+
+/* ---------------------------------------------------------
+   STATE + ROUTER
+--------------------------------------------------------- */
+let state = { screen:"home", scenarioKey:null, step:0, explainOpen:false, justAdvanced:false };
+
+const SCENARIOS = { metric:metricFlow, ranking:rankingFlow, precompute:precomputeFlow };
+
+function go(screen, extra){ state = Object.assign({screen, scenarioKey:null, step:0, explainOpen:false, justAdvanced:false}, extra||{}); render(); }
+
+function render(){
+  const app = document.getElementById("app");
+  if(state.screen === "home") app.innerHTML = homeView();
+  else if(state.screen === "picker") app.innerHTML = pickerView();
+  else if(state.screen === "flow") app.innerHTML = flowView();
+  wireEvents();
+  if(state.justAdvanced){
+    const conn = document.querySelector(".connector.animate");
+    if(conn){ requestAnimationFrame(()=> conn.classList.add("go")); }
+    state.justAdvanced = false;
+  }
+}
+
+function topbar(crumbs){
+  return `
+  <div class="topbar">
+    <div class="brand"><span class="dot"></span> Data Flow Console</div>
+    <div class="crumbs">${crumbs}</div>
+  </div>`;
+}
+
+function legend(){
+  return `<div class="legend">
+    ${Object.entries(KIND_LABEL).map(([k,l])=>`<div class="item"><span class="sw" style="background:${KIND_COLOR[k]}"></span>${l}</div>`).join("")}
+  </div>`;
+}
+
+function homeView(){
+  return `
+  ${topbar(`<span>Home</span>`)}
+  <h1>Airport Investment Intelligence Agent</h1>
+  <p class="sub">Two separate flows make this system work: one runs once, offline, to build a reference cache — the other runs live, every time you ask a question. Pick one to watch it move through the actual code, step by step.</p>
+  ${legend()}
+  <div class="cards">
+    <button class="card precompute" data-go="precompute-direct">
+      <div class="eyebrow">Offline · runs once</div>
+      <h2>Precompute Flow</h2>
+      <p>Turns raw BTS/FAA CSV files into the reference cache — the ten steps from raw data to a single JSON file.</p>
+      <div class="go">Watch this flow →</div>
+    </button>
+    <button class="card runtime" data-go="picker">
+      <div class="eyebrow">Live · runs per question</div>
+      <h2>Agent Runtime Flow</h2>
+      <p>What happens between you typing a question and the agent answering — including how Claude decides which tool to call.</p>
+      <div class="go">Watch this flow →</div>
+    </button>
+  </div>`;
+}
+
+function pickerView(){
+  return `
+  ${topbar(`<button data-go="home">Home</button> <span>/</span> Agent Runtime`)}
+  <h1>Pick a sample question</h1>
+  <p class="sub">Both questions go through the same agent loop, but the system prompt routes them to different tools. Watch how the routing decision changes what happens next.</p>
+  <div class="qcards">
+    <button class="qcard" data-scenario="metric">
+      <div>
+        <div class="q">"What's the delay rate at LAX and SFO?"</div>
+        <div class="tool">${metricFlow.tool}</div>
+      </div>
+      <div class="arrow">→</div>
+    </button>
+    <button class="qcard" data-scenario="ranking">
+      <div>
+        <div class="q">"Which New England airports are the best expansion candidates?"</div>
+        <div class="tool">${rankingFlow.tool}</div>
+      </div>
+      <div class="arrow">→</div>
+    </button>
+  </div>`;
+}
+
+function flowView(){
+  const scenario = SCENARIOS[state.scenarioKey];
+  const steps = scenario.steps;
+  const i = state.step;
+  const isDone = i >= steps.length;
+  const accentVar = scenario.accent === "precompute" ? "var(--accent-precompute)" : "var(--accent-runtime)";
+
+  const crumbLabel = state.scenarioKey === "precompute" ? "Precompute Flow" : "Agent Runtime Flow";
+  const crumbs = state.scenarioKey === "precompute"
+    ? `<button data-go="home">Home</button> <span>/</span> Precompute`
+    : `<button data-go="home">Home</button> <span>/</span> <button data-go="picker">Agent Runtime</button> <span>/</span> Question`;
+
+  let railHtml = `<div class="rail">`;
+  steps.forEach((s, idx)=>{
+    const cls = idx < i ? "done" : idx === i ? "current" : "";
+    const kColor = KIND_COLOR[s.kind];
+    railHtml += `<div class="chip ${cls}" style="--kind-color:${kColor}" data-jump="${idx}"><span class="f">${s.file}</span><span class="fn">${s.fn}</span></div>`;
+    if(idx < steps.length - 1){
+      const crossed = idx < i ? "crossed" : "";
+      const animate = (state.justAdvanced && idx === i - 1) ? "animate" : "";
+      railHtml += `<div class="connector ${crossed} ${animate}" style="--kind-color:${kColor}"><span class="blip"></span></div>`;
+    }
+  });
+  railHtml += `</div>`;
+
+  if(isDone){
+    const otherKey = state.scenarioKey === "metric" ? "ranking" : state.scenarioKey === "ranking" ? "metric" : null;
+    return `
+    ${topbar(crumbs)}
+    <h1>${crumbLabel}</h1>
+    <p class="sub">${scenario.title}</p>
+    ${railHtml}
+    <div class="stage">
+      <div class="done-panel">
+        <div class="check">✓</div>
+        <h3>Flow complete — ${steps.length} steps</h3>
+        <p>That's the full trip${state.scenarioKey==="precompute" ? " from raw CSV files to a ready reference cache." : " from your typed question to the printed answer."}</p>
+        <div class="done-actions">
+          <button class="btn ghost" data-go="replay">↺ Replay this flow</button>
+          ${otherKey ? `<button class="btn ghost" data-go="switch-scenario" data-target="${otherKey}">Try the other question →</button>` : ""}
+          ${state.scenarioKey!=="precompute" ? `` : `<button class="btn ghost" data-go="picker">Watch the Agent Runtime flow →</button>`}
+          <button class="btn ghost" data-go="home">Home</button>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  const s = steps[i];
+  const kColor = KIND_COLOR[s.kind];
+  const noteHtml = i===0 ? `<div class="illustrative-note">Payload values below are illustrative examples, not real BTS output.</div>` : "";
+
+  return `
+  ${topbar(crumbs)}
+  <h1>${crumbLabel}</h1>
+  <p class="sub">${scenario.title}</p>
+  ${railHtml}
+  <div class="stage" style="--kind-color:${kColor}">
+    <div class="stage-top">
+      <div class="step-count">STEP ${String(i+1).padStart(2,"0")} / ${steps.length}</div>
+      <div class="kind-badge"><span class="sw" style="background:${kColor}"></span>${KIND_LABEL[s.kind]}</div>
+    </div>
+    <div class="loc"><b>${s.file}</b> · ${s.fn}</div>
+    <h3>${s.title}</h3>
+    <p class="summary">${s.summary}</p>
+    ${noteHtml}
+    <div class="payload">
+      <div class="hdr">payload at this step</div>
+      <pre>${escapeHtml(s.payload)}</pre>
+    </div>
+    <div class="actions">
+      <button class="btn ghost" data-go="back" ${i===0 ? "disabled":""}>← Back</button>
+      <button class="btn ghost" data-go="toggle-explain">${state.explainOpen ? "Hide explanation" : "ⓘ Explain this step"}</button>
+      <button class="btn primary" style="--kind-color:${kColor}" data-go="continue">Continue →</button>
+    </div>
+    <div class="explain ${state.explainOpen ? "open":""}">
+      <p>${s.explain}</p>
+      ${s.quote ? `<div class="quote">${escapeHtml(s.quote)}</div>` : ""}
+    </div>
+  </div>`;
+}
+
+function escapeHtml(str){
+  return (str||"").replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+}
+
+function wireEvents(){
+  document.querySelectorAll("[data-go]").forEach(el=>{
+    el.addEventListener("click", (e)=>{
+      const action = el.getAttribute("data-go");
+      if(action === "home") go("home");
+      else if(action === "picker") go("picker");
+      else if(action === "precompute-direct") go("flow", { scenarioKey:"precompute" });
+      else if(action === "back"){ if(state.step>0){ state.step--; state.explainOpen=false; render(); } }
+      else if(action === "continue"){
+        state.step++; state.explainOpen=false; state.justAdvanced=true; render();
+      }
+      else if(action === "toggle-explain"){ state.explainOpen = !state.explainOpen; render(); }
+      else if(action === "replay"){ state.step=0; state.explainOpen=false; render(); }
+      else if(action === "switch-scenario"){ go("flow", { scenarioKey: el.getAttribute("data-target") }); }
+    });
+  });
+  document.querySelectorAll("[data-scenario]").forEach(el=>{
+    el.addEventListener("click", ()=> go("flow", { scenarioKey: el.getAttribute("data-scenario") }));
+  });
+  document.querySelectorAll("[data-jump]").forEach(el=>{
+    el.addEventListener("click", ()=>{
+      state.step = parseInt(el.getAttribute("data-jump"), 10);
+      state.explainOpen = false;
+      state.justAdvanced = false;
+      render();
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
