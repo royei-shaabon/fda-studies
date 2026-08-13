@@ -1,0 +1,698 @@
+{
+  "computedAt": "2026-08-13T19:17:56.943Z",
+  "airports": {
+    "ATL": {
+      "finalScore": {
+        "airport": "ATL",
+        "finalScore": 59.6875,
+        "rawMetrics": {
+          "airport": "ATL",
+          "historicalGrowth": 0.043241828742337424,
+          "currentPassengerScale": 51423800,
+          "delayCongestion": 0.21359048479567327,
+          "longHaulShare": 0.15162197270524544
+        },
+        "normalizedScores": {
+          "airport": "ATL",
+          "growth": 34.375,
+          "scale": 100,
+          "delay": 43.75,
+          "longHaul": 53.125
+        }
+      },
+      "monthlyYoY": 0.0014652334951395023
+    },
+    "LAX": {
+      "finalScore": {
+        "airport": "LAX",
+        "finalScore": 53.90625,
+        "rawMetrics": {
+          "airport": "LAX",
+          "historicalGrowth": 0.041596204990639235,
+          "currentPassengerScale": 36590656,
+          "delayCongestion": 0.19998191797140913,
+          "longHaulShare": 0.5322414006461103
+        },
+        "normalizedScores": {
+          "airport": "LAX",
+          "growth": 28.125,
+          "scale": 87.5,
+          "delay": 28.125,
+          "longHaul": 93.75
+        }
+      },
+      "monthlyYoY": -0.038738156934160176
+    },
+    "ORD": {
+      "finalScore": {
+        "airport": "ORD",
+        "finalScore": 88.359375,
+        "rawMetrics": {
+          "airport": "ORD",
+          "historicalGrowth": 0.07111710815729418,
+          "currentPassengerScale": 41990769,
+          "delayCongestion": 0.27205373475500316,
+          "longHaulShare": 0.12972703595878418
+        },
+        "normalizedScores": {
+          "airport": "ORD",
+          "growth": 87.5,
+          "scale": 96.875,
+          "delay": 96.875,
+          "longHaul": 43.75
+        }
+      },
+      "monthlyYoY": 0.10465131057605358
+    },
+    "DFW": {
+      "finalScore": {
+        "airport": "DFW",
+        "finalScore": 77.1484375,
+        "rawMetrics": {
+          "airport": "DFW",
+          "historicalGrowth": 0.05503755698561971,
+          "currentPassengerScale": 41226390,
+          "delayCongestion": 0.2898823080264873,
+          "longHaulShare": 0.07763507791974994
+        },
+        "normalizedScores": {
+          "airport": "DFW",
+          "growth": 65.625,
+          "scale": 93.75,
+          "delay": 100,
+          "longHaul": 25
+        }
+      },
+      "monthlyYoY": 0.01213152084652563
+    },
+    "DEN": {
+      "finalScore": {
+        "airport": "DEN",
+        "finalScore": 73.515625,
+        "rawMetrics": {
+          "airport": "DEN",
+          "historicalGrowth": 0.05706690835698023,
+          "currentPassengerScale": 40252785,
+          "delayCongestion": 0.24190426878743201,
+          "longHaulShare": 0.03976311204305491
+        },
+        "normalizedScores": {
+          "airport": "DEN",
+          "growth": 71.875,
+          "scale": 90.625,
+          "delay": 75,
+          "longHaul": 12.5
+        }
+      },
+      "monthlyYoY": 0.01850239299805093
+    },
+    "JFK": {
+      "finalScore": {
+        "airport": "JFK",
+        "finalScore": 64.4140625,
+        "rawMetrics": {
+          "airport": "JFK",
+          "historicalGrowth": 0.047140054392708734,
+          "currentPassengerScale": 30556247,
+          "delayCongestion": 0.21682630650849632,
+          "longHaulShare": 0.6136312486281447
+        },
+        "normalizedScores": {
+          "airport": "JFK",
+          "growth": 46.875,
+          "scale": 84.375,
+          "delay": 50,
+          "longHaul": 96.875
+        }
+      },
+      "monthlyYoY": -0.08883457434534935
+    },
+    "SFO": {
+      "finalScore": {
+        "airport": "SFO",
+        "finalScore": 82.6171875,
+        "rawMetrics": {
+          "airport": "SFO",
+          "historicalGrowth": 0.0906096297262216,
+          "currentPassengerScale": 26642605,
+          "delayCongestion": 0.23003744699597994,
+          "longHaulShare": 0.5291805362125813
+        },
+        "normalizedScores": {
+          "airport": "SFO",
+          "growth": 93.75,
+          "scale": 78.125,
+          "delay": 59.375,
+          "longHaul": 90.625
+        }
+      },
+      "monthlyYoY": 0.01132852244036628
+    },
+    "SEA": {
+      "finalScore": {
+        "airport": "SEA",
+        "finalScore": 58.828125,
+        "rawMetrics": {
+          "airport": "SEA",
+          "historicalGrowth": 0.04777510637923373,
+          "currentPassengerScale": 25347779,
+          "delayCongestion": 0.2120608419856145,
+          "longHaulShare": 0.3513862891103793
+        },
+        "normalizedScores": {
+          "airport": "SEA",
+          "growth": 53.125,
+          "scale": 68.75,
+          "delay": 40.625,
+          "longHaul": 81.25
+        }
+      },
+      "monthlyYoY": -0.016058682373916954
+    },
+    "LAS": {
+      "finalScore": {
+        "airport": "LAS",
+        "finalScore": 45.5078125,
+        "rawMetrics": {
+          "airport": "LAS",
+          "historicalGrowth": 0.01477153465919833,
+          "currentPassengerScale": 26165825,
+          "delayCongestion": 0.2531593589320933,
+          "longHaulShare": 0.19533395182456506
+        },
+        "normalizedScores": {
+          "airport": "LAS",
+          "growth": 6.25,
+          "scale": 71.875,
+          "delay": 81.25,
+          "longHaul": 62.5
+        }
+      },
+      "monthlyYoY": -0.07269519674488414
+    },
+    "MCO": {
+      "finalScore": {
+        "airport": "MCO",
+        "finalScore": 68.359375,
+        "rawMetrics": {
+          "airport": "MCO",
+          "historicalGrowth": 0.0480154912080693,
+          "currentPassengerScale": 28447821,
+          "delayCongestion": 0.2631339808030897,
+          "longHaulShare": 0.11880751780602107
+        },
+        "normalizedScores": {
+          "airport": "MCO",
+          "growth": 56.25,
+          "scale": 81.25,
+          "delay": 90.625,
+          "longHaul": 34.375
+        }
+      },
+      "monthlyYoY": 0.06043199695244939
+    },
+    "EWR": {
+      "finalScore": {
+        "airport": "EWR",
+        "finalScore": 40.7421875,
+        "rawMetrics": {
+          "airport": "EWR",
+          "historicalGrowth": 0.03010511424859308,
+          "currentPassengerScale": 23461161,
+          "delayCongestion": 0.20524466750313677,
+          "longHaulShare": 0.3986378593966428
+        },
+        "normalizedScores": {
+          "airport": "EWR",
+          "growth": 18.75,
+          "scale": 59.375,
+          "delay": 34.375,
+          "longHaul": 84.375
+        }
+      },
+      "monthlyYoY": -0.002854753119977737
+    },
+    "CLT": {
+      "finalScore": {
+        "airport": "CLT",
+        "finalScore": 50.9765625,
+        "rawMetrics": {
+          "airport": "CLT",
+          "historicalGrowth": 0.04328000471654797,
+          "currentPassengerScale": 25151370,
+          "delayCongestion": 0.24169844873673263,
+          "longHaulShare": 0.10099422019555993
+        },
+        "normalizedScores": {
+          "airport": "CLT",
+          "growth": 37.5,
+          "scale": 62.5,
+          "delay": 71.875,
+          "longHaul": 31.25
+        }
+      },
+      "monthlyYoY": -0.07147921648090656
+    },
+    "PHX": {
+      "finalScore": {
+        "airport": "PHX",
+        "finalScore": 53.4375,
+        "rawMetrics": {
+          "airport": "PHX",
+          "historicalGrowth": 0.0464567418691203,
+          "currentPassengerScale": 25324947,
+          "delayCongestion": 0.22996590485050786,
+          "longHaulShare": 0.13732474938644493
+        },
+        "normalizedScores": {
+          "airport": "PHX",
+          "growth": 43.75,
+          "scale": 65.625,
+          "delay": 56.25,
+          "longHaul": 46.875
+        }
+      },
+      "monthlyYoY": -0.009334427736786576
+    },
+    "IAH": {
+      "finalScore": {
+        "airport": "IAH",
+        "finalScore": 58.2421875,
+        "rawMetrics": {
+          "airport": "IAH",
+          "historicalGrowth": 0.05505652668848695,
+          "currentPassengerScale": 23457624,
+          "delayCongestion": 0.21413896152409415,
+          "longHaulShare": 0.12170631603609983
+        },
+        "normalizedScores": {
+          "airport": "IAH",
+          "growth": 68.75,
+          "scale": 56.25,
+          "delay": 46.875,
+          "longHaul": 37.5
+        }
+      },
+      "monthlyYoY": 0.01762821299348608
+    },
+    "MIA": {
+      "finalScore": {
+        "airport": "MIA",
+        "finalScore": 55.3515625,
+        "rawMetrics": {
+          "airport": "MIA",
+          "historicalGrowth": 0.034535223758964166,
+          "currentPassengerScale": 26504026,
+          "delayCongestion": 0.2595367473516658,
+          "longHaulShare": 0.23014526170476893
+        },
+        "normalizedScores": {
+          "airport": "MIA",
+          "growth": 25,
+          "scale": 75,
+          "delay": 84.375,
+          "longHaul": 68.75
+        }
+      },
+      "monthlyYoY": -0.010850475796144914
+    },
+    "BOS": {
+      "finalScore": {
+        "airport": "BOS",
+        "finalScore": 69.7265625,
+        "rawMetrics": {
+          "airport": "BOS",
+          "historicalGrowth": 0.06680467554395801,
+          "currentPassengerScale": 20983745,
+          "delayCongestion": 0.23233475372673926,
+          "longHaulShare": 0.31303673390998604
+        },
+        "normalizedScores": {
+          "airport": "BOS",
+          "growth": 84.375,
+          "scale": 53.125,
+          "delay": 62.5,
+          "longHaul": 78.125
+        }
+      },
+      "monthlyYoY": 0.00812704134088244
+    },
+    "MSP": {
+      "finalScore": {
+        "airport": "MSP",
+        "finalScore": 46.2890625,
+        "rawMetrics": {
+          "airport": "MSP",
+          "historicalGrowth": 0.04845441757096844,
+          "currentPassengerScale": 17302705,
+          "delayCongestion": 0.19251065647442,
+          "longHaulShare": 0.07138664156847152
+        },
+        "normalizedScores": {
+          "airport": "MSP",
+          "growth": 59.375,
+          "scale": 50,
+          "delay": 21.875,
+          "longHaul": 15.625
+        }
+      },
+      "monthlyYoY": -0.008146156870894964
+    },
+    "DTW": {
+      "finalScore": {
+        "airport": "DTW",
+        "finalScore": 59.0625,
+        "rawMetrics": {
+          "airport": "DTW",
+          "historicalGrowth": 0.05908458707037887,
+          "currentPassengerScale": 16361835,
+          "delayCongestion": 0.2110695351326237,
+          "longHaulShare": 0.16576692039737598
+        },
+        "normalizedScores": {
+          "airport": "DTW",
+          "growth": 78.125,
+          "scale": 46.875,
+          "delay": 37.5,
+          "longHaul": 56.25
+        }
+      },
+      "monthlyYoY": -0.01674691357079064
+    },
+    "PHL": {
+      "finalScore": {
+        "airport": "PHL",
+        "finalScore": 63.6328125,
+        "rawMetrics": {
+          "airport": "PHL",
+          "historicalGrowth": 0.0612637105286775,
+          "currentPassengerScale": 14758264,
+          "delayCongestion": 0.23662420382165605,
+          "longHaulShare": 0.2091119253592428
+        },
+        "normalizedScores": {
+          "airport": "PHL",
+          "growth": 81.25,
+          "scale": 40.625,
+          "delay": 65.625,
+          "longHaul": 65.625
+        }
+      },
+      "monthlyYoY": -0.06267474407132899
+    },
+    "LGA": {
+      "finalScore": {
+        "airport": "LGA",
+        "finalScore": 42.96875,
+        "rawMetrics": {
+          "airport": "LGA",
+          "historicalGrowth": 0.04358409793928764,
+          "currentPassengerScale": 16128777,
+          "delayCongestion": 0.23862591207308848,
+          "longHaulShare": 0.0006913729416681749
+        },
+        "normalizedScores": {
+          "airport": "LGA",
+          "growth": 40.625,
+          "scale": 43.75,
+          "delay": 68.75,
+          "longHaul": 3.125
+        }
+      },
+      "monthlyYoY": -0.03423307108185656
+    },
+    "BWI": {
+      "finalScore": {
+        "airport": "BWI",
+        "finalScore": 37.3046875,
+        "rawMetrics": {
+          "airport": "BWI",
+          "historicalGrowth": 0.0339472258427501,
+          "currentPassengerScale": 12215586,
+          "delayCongestion": 0.2697965134978665,
+          "longHaulShare": 0.12366930247963544
+        },
+        "normalizedScores": {
+          "airport": "BWI",
+          "growth": 21.875,
+          "scale": 28.125,
+          "delay": 93.75,
+          "longHaul": 40.625
+        }
+      },
+      "monthlyYoY": -0.06968506990089704
+    },
+    "SLC": {
+      "finalScore": {
+        "airport": "SLC",
+        "finalScore": 22.421875,
+        "rawMetrics": {
+          "airport": "SLC",
+          "historicalGrowth": 0.0271455593079602,
+          "currentPassengerScale": 13488900,
+          "delayCongestion": 0.15344254450055972,
+          "longHaulShare": 0.14708597439376078
+        },
+        "normalizedScores": {
+          "airport": "SLC",
+          "growth": 15.625,
+          "scale": 34.375,
+          "delay": 0,
+          "longHaul": 50
+        }
+      },
+      "monthlyYoY": 0.026800848746582503
+    },
+    "SAN": {
+      "finalScore": {
+        "airport": "SAN",
+        "finalScore": 42.421875,
+        "rawMetrics": {
+          "airport": "SAN",
+          "historicalGrowth": 0.04216903515720794,
+          "currentPassengerScale": 13117490,
+          "delayCongestion": 0.24908063959040208,
+          "longHaulShare": 0.2674479645115033
+        },
+        "normalizedScores": {
+          "airport": "SAN",
+          "growth": 31.25,
+          "scale": 31.25,
+          "delay": 78.125,
+          "longHaul": 71.875
+        }
+      },
+      "monthlyYoY": 0.10356213142457937
+    },
+    "IAD": {
+      "finalScore": {
+        "airport": "IAD",
+        "finalScore": 62.578125,
+        "rawMetrics": {
+          "airport": "IAD",
+          "historicalGrowth": 0.1071439381660153,
+          "currentPassengerScale": 13881740,
+          "delayCongestion": 0.16603819699032854,
+          "longHaulShare": 0.45638363778604124
+        },
+        "normalizedScores": {
+          "airport": "IAD",
+          "growth": 100,
+          "scale": 37.5,
+          "delay": 6.25,
+          "longHaul": 87.5
+        }
+      },
+      "monthlyYoY": -0.07369468528224248
+    },
+    "DCA": {
+      "finalScore": {
+        "airport": "DCA",
+        "finalScore": 24.53125,
+        "rawMetrics": {
+          "airport": "DCA",
+          "historicalGrowth": 0.013186919930651068,
+          "currentPassengerScale": 11990374,
+          "delayCongestion": 0.2629868473785842,
+          "longHaulShare": 0.07491401018850621
+        },
+        "normalizedScores": {
+          "airport": "DCA",
+          "growth": 3.125,
+          "scale": 21.875,
+          "delay": 87.5,
+          "longHaul": 18.75
+        }
+      },
+      "monthlyYoY": -0.06226248122655376
+    },
+    "TPA": {
+      "finalScore": {
+        "airport": "TPA",
+        "finalScore": 40.15625,
+        "rawMetrics": {
+          "airport": "TPA",
+          "historicalGrowth": 0.047757906274314844,
+          "currentPassengerScale": 12189368,
+          "delayCongestion": 0.22404278467406835,
+          "longHaulShare": 0.08405160956663217
+        },
+        "normalizedScores": {
+          "airport": "TPA",
+          "growth": 50,
+          "scale": 25,
+          "delay": 53.125,
+          "longHaul": 28.125
+        }
+      },
+      "monthlyYoY": 0.018841705990693982
+    },
+    "PDX": {
+      "finalScore": {
+        "airport": "PDX",
+        "finalScore": 49.375,
+        "rawMetrics": {
+          "airport": "PDX",
+          "historicalGrowth": 0.07776405687766051,
+          "currentPassengerScale": 9194576,
+          "delayCongestion": 0.16724911830714972,
+          "longHaulShare": 0.18403458734801909
+        },
+        "normalizedScores": {
+          "airport": "PDX",
+          "growth": 90.625,
+          "scale": 15.625,
+          "delay": 9.375,
+          "longHaul": 59.375
+        }
+      },
+      "monthlyYoY": 0.07360824772609215
+    },
+    "HNL": {
+      "finalScore": {
+        "airport": "HNL",
+        "finalScore": 46.5234375,
+        "rawMetrics": {
+          "airport": "HNL",
+          "historicalGrowth": 0.05905338094590703,
+          "currentPassengerScale": 10391487,
+          "delayCongestion": 0.1569988374312436,
+          "longHaulShare": 0.6916623193581438
+        },
+        "normalizedScores": {
+          "airport": "HNL",
+          "growth": 75,
+          "scale": 18.75,
+          "delay": 3.125,
+          "longHaul": 100
+        }
+      },
+      "monthlyYoY": -0.04263309818757235
+    },
+    "ANC": {
+      "finalScore": {
+        "airport": "ANC",
+        "finalScore": 14.5703125,
+        "rawMetrics": {
+          "airport": "ANC",
+          "historicalGrowth": 0.019143372810902698,
+          "currentPassengerScale": 2725281,
+          "delayCongestion": 0.16864947664028593,
+          "longHaulShare": 0.292429294447068
+        },
+        "normalizedScores": {
+          "airport": "ANC",
+          "growth": 9.375,
+          "scale": 6.25,
+          "delay": 12.5,
+          "longHaul": 75
+        }
+      },
+      "monthlyYoY": 0.00002405740095868743
+    },
+    "SNA": {
+      "finalScore": {
+        "airport": "SNA",
+        "finalScore": 11.2109375,
+        "rawMetrics": {
+          "airport": "SNA",
+          "historicalGrowth": -0.003373548174775516,
+          "currentPassengerScale": 5590354,
+          "delayCongestion": 0.2002323606952947,
+          "longHaulShare": 0.07602130383871934
+        },
+        "normalizedScores": {
+          "airport": "SNA",
+          "growth": 0,
+          "scale": 12.5,
+          "delay": 31.25,
+          "longHaul": 21.875
+        }
+      },
+      "monthlyYoY": 0.018359017789169735
+    },
+    "PVD": {
+      "finalScore": {
+        "airport": "PVD",
+        "finalScore": 45.625,
+        "rawMetrics": {
+          "airport": "PVD",
+          "historicalGrowth": 0.10404675463219899,
+          "currentPassengerScale": 2095785,
+          "delayCongestion": 0.1966466433427949,
+          "longHaulShare": 0.0028757720853999813
+        },
+        "normalizedScores": {
+          "airport": "PVD",
+          "growth": 96.875,
+          "scale": 3.125,
+          "delay": 25,
+          "longHaul": 6.25
+        }
+      },
+      "monthlyYoY": -0.07246067521002716
+    },
+    "BDL": {
+      "finalScore": {
+        "airport": "BDL",
+        "finalScore": 32.8125,
+        "rawMetrics": {
+          "airport": "BDL",
+          "historicalGrowth": 0.049151333541993976,
+          "currentPassengerScale": 3251263,
+          "delayCongestion": 0.19200726612170754,
+          "longHaulShare": 0.019861512279997034
+        },
+        "normalizedScores": {
+          "airport": "BDL",
+          "growth": 62.5,
+          "scale": 9.375,
+          "delay": 18.75,
+          "longHaul": 9.375
+        }
+      },
+      "monthlyYoY": -0.04732324672826527
+    },
+    "MHT": {
+      "finalScore": {
+        "airport": "MHT",
+        "finalScore": 7.6953125,
+        "rawMetrics": {
+          "airport": "MHT",
+          "historicalGrowth": 0.020632108660181177,
+          "currentPassengerScale": 683107,
+          "delayCongestion": 0.18120237087214225,
+          "longHaulShare": 0.00010686466395454885
+        },
+        "normalizedScores": {
+          "airport": "MHT",
+          "growth": 12.5,
+          "scale": 0,
+          "delay": 15.625,
+          "longHaul": 0
+        }
+      },
+      "monthlyYoY": -0.02649246960624206
+    }
+  }
+}

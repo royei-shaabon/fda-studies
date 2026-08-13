@@ -1,1 +1,2 @@
-/data/
+/data/*
+!/data/reference-cache.json
